@@ -1,5 +1,6 @@
 ﻿using Birds.src.bounding_areas;
 using Birds.src.controllers;
+using Birds.src.utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -90,17 +91,34 @@ namespace Birds.src
             if (distance2 < 5)
                 distance2 = 5;
             float radius = Radius * (e.Mass + Mass) / 2;
-            Vector2 overlapRepulsion = 500f * Vector2.Normalize(position - e.Position) / distance2;
+            Vector2 overlapRepulsion = 20f * Vector2.Normalize(position - e.Position) / distance2;
             TotalExteriorForce += overlapRepulsion;
         }
-        public void GenerateAxes()
+
+        public void Collide(ICollidable c)
         {
-            OBB.GenerateAxes();
+            if(c is IEntity e)
+                Collide(e);
+            else
+                throw new Exception("not implemented for other types");
         }
 
-        public bool CollidesWith(IEntity e)
+        public bool CollidesWith(ICollidable e)
         {
-            return IsCollidable && e.IsCollidable && BoundingArea.CollidesWith(e.BoundingArea);
+            if(IsCollidable && e.IsCollidable)
+            {
+                if(e is WorldEntity we){
+                    if(we.BoundingCircle.CollidesWith(BoundingCircle))
+                        return BoundingArea.CollidesWith(e.BoundingArea);
+                    else
+                        return false;
+                }
+                else
+                    return BoundingArea.CollidesWith(e.BoundingArea);
+            }
+            else
+                return false;
+            
         }
 
         public override void Update(GameTime gameTime)

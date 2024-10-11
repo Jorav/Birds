@@ -71,7 +71,7 @@ namespace Birds.src
                 int nrLines = Math.Min(Math.Min(buildTimes.Count, CDTimes.Count), Math.Min(otherTimes.Count, CHTimes.Count));
                 for(int i = 0; i<nrLines; i++)
                 {
-                    outputFile.WriteLine(buildTimes[i].ToString() + "," + CDTimes[i].ToString() + "," + CHTimes[i].ToString() + "," + otherTimes[i].ToString());
+                    outputFile.WriteLine(buildTimes[i].ToString() + ";" + CDTimes[i].ToString() + ";" + CHTimes[i].ToString() + ";" + otherTimes[i].ToString());
                 }
             }
         }

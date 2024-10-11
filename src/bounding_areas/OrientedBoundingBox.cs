@@ -16,6 +16,8 @@ namespace Birds.src.bounding_areas
         public float Width { get { return (int)(Math.Round((UR - UL).Length())); } }
         public float Height { get { return (int)(Math.Round((UR - DR).Length())); } }
         public Vector2 AbsolutePosition { get { return (UL + DR) / 2; } }
+        public (float, float) MaxXY{get;set;}
+        public (float, float) MinXY{get;set;}
         private Vector2 origin;
         public Vector2 Origin
         {
@@ -40,6 +42,8 @@ namespace Birds.src.bounding_areas
                 DR += change;
                 UR += change;
                 position = value;
+                MaxXY = ((float)Math.Max(Math.Max(UL.X, UR.X), Math.Max(DL.X, DR.X)),(float)Math.Max(Math.Max(UL.Y, UR.Y), Math.Max(DL.Y, DR.Y)));
+                MinXY = ((float)Math.Min(Math.Min(UL.X, UR.X), Math.Min(DL.X, DR.X)),(float)Math.Min(Math.Min(UL.Y, UR.Y), Math.Min(DL.Y, DR.Y)));
             }
             get
             {
@@ -56,9 +60,11 @@ namespace Birds.src.bounding_areas
             }
             get { return rotation; }
         }
-        public float Radius {get{return (float)Math.Sqrt(Math.Pow(Width / 2, 2) + Math.Pow(Height / 2, 2));}}
 
-        Vector2[] axes;
+        float IBoundingArea.Radius => throw new NotImplementedException();
+
+        public float Radius;
+        Vector2[] axes = new Vector2[2];
 
         public OrientedBoundingBox(Vector2 position, float rotation, int width, int height)
         {
@@ -69,12 +75,15 @@ namespace Birds.src.bounding_areas
             this.position = position;
             origin = new Vector2(Width / 2, Height / 2);
             Rotation = rotation;
+            Radius = (float)Math.Sqrt(Math.Pow(Width / 2, 2) + Math.Pow(Height / 2, 2));
+            MaxXY = ((float)Math.Max(Math.Max(UL.X, UR.X), Math.Max(DL.X, DR.X)),(float)Math.Max(Math.Max(UL.Y, UR.Y), Math.Max(DL.Y, DR.Y)));
+            MinXY = ((float)Math.Min(Math.Min(UL.X, UR.X), Math.Min(DL.X, DR.X)),(float)Math.Min(Math.Min(UL.Y, UR.Y), Math.Min(DL.Y, DR.Y)));
         }
         public bool CollidesWith(OrientedBoundingBox r)
         {
             bool collides = true;
-            //GenerateAxes();
-            //r.GenerateAxes();
+            GenerateAxes();
+            r.GenerateAxes();
             axes = new Vector2[] { axes[0], axes[1], r.axes[0], r.axes[1] };
             float[] scalarA = new float[4];
             float[] scalarB = new float[4];
@@ -105,15 +114,6 @@ namespace Birds.src.bounding_areas
             UR = Position + Vector2.Transform(-Origin + width, rotationMatrix);
         }
 
-        //returns a tuple with the maximum X positions and maximum y position of the whole object (these two values does not necessarily belong to the same point)
-        public (float, float) maxXY(){
-            return ((float)Math.Max(Math.Max(UL.X, UR.X), Math.Max(DL.X, DR.X)),(float)Math.Max(Math.Max(UL.Y, UR.Y), Math.Max(DL.Y, DR.Y)));
-        }
-        //returns a tuple with the minimum X positions and minimum y position of the whole object (these two values does not necessarily belong to the same point)
-        public (float, float) minXY(){
-            return ((float)Math.Min(Math.Min(UL.X, UR.X), Math.Min(DL.X, DR.X)),(float)Math.Min(Math.Min(UL.Y, UR.Y), Math.Min(DL.Y, DR.Y)));
-        }
-
         public bool Contains(Vector2 position)
         {
             Vector2 AM = position - UL;
@@ -123,7 +123,6 @@ namespace Birds.src.bounding_areas
         }
         public Vector2[] GenerateAxes()
         {
-            axes = new Vector2[2];
             axes[0] = new Vector2(UR.X - UL.X, UR.Y - UL.Y);
             axes[1] = new Vector2(UR.X - DR.X, UR.Y - DR.Y);
             return axes;
@@ -131,11 +130,10 @@ namespace Birds.src.bounding_areas
 
         public bool CollidesWith(IBoundingArea boundingArea)
         {
-            if(boundingArea is OrientedBoundingBox OBB){
+            if(boundingArea is OrientedBoundingBox OBB)
                 return CollidesWith(OBB);
-            }
             else
-                throw new Exception("comparing different boundingarea types (that are not currently supported)");
+                throw new NotImplementedException();
         }
     }
 }

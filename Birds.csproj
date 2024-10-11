@@ -31,15 +31,20 @@
     <Compile Include="src\bounding_areas\OrientedBoundingBox.cs" />
     <Compile Include="src\BVH\AABBNode.cs" />
     <Compile Include="src\BVH\AABBTree.cs" />
-    <Compile Include="src\Camera.cs" />
+    <Compile Include="src\controllers\CohesiveController.cs" />
     <Compile Include="src\controllers\Controller.cs" />
+    <Compile Include="src\controllers\GameController.cs" />
+    <Compile Include="src\controllers\Player.cs" />
     <Compile Include="src\EntityFactory.cs" />
     <Compile Include="src\Game1.cs" />
-    <Compile Include="src\IDs.cs" />
+    <Compile Include="src\ICollidable.cs" />
     <Compile Include="src\IEntity.cs" />
     <Compile Include="src\Movable.cs" />
     <Compile Include="src\PerformanceMeasurer.cs" />
     <Compile Include="src\Sprite.cs" />
+    <Compile Include="src\utility\Camera.cs" />
+    <Compile Include="src\utility\IDs.cs" />
+    <Compile Include="src\utility\Input.cs" />
     <Compile Include="src\WorldEntity.cs" />
   </ItemGroup>
 

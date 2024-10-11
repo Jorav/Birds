@@ -16,14 +16,14 @@ namespace Birds.src.BVH
         public float Radius { get { return root.Radius; } }
         public AABBNode root;
         private Stack<AABBNode> freeNodes = new();
-        private HashSet<IEntity> worldEntities = new();
-        public List<(IEntity, IEntity)> CollissionPairs = new();
+        private HashSet<ICollidable> entities = new();
+        public List<(ICollidable, ICollidable)> CollissionPairs = new();
 
         public AABBTree()
         {
         }
 
-        public void Add(IEntity we)
+        public void Add(ICollidable we)
         {
             AABBNode leaf = AllocateLeafNode(we);
             if (root == null)
@@ -62,12 +62,13 @@ namespace Birds.src.BVH
             } while (parent != null);
         }
 
-        public void UpdateTree(List<IEntity> newEntities){
-            worldEntities.Clear();
+        public void UpdateTree(List<ICollidable> newEntities){
+            entities.Clear();
             root = CreateTreeTopDown_Median(null, newEntities);
+            //RebuildTree();
         }
         //for root: parent = null, newEntities is worldEntities
-        public AABBNode CreateTreeTopDown_Median(AABBNode parent, List<IEntity> newEntities)
+        public AABBNode CreateTreeTopDown_Median(AABBNode parent, List<ICollidable> newEntities)
         {
             //step 0: HANDLE EDGE-CASES
             if (parent == null)
@@ -84,26 +85,12 @@ namespace Birds.src.BVH
 
 
             //step 1: DECIDE WHAT AXIS TO SPLIT
-            float minX = float.MaxValue;
-            float minY = float.MaxValue;
-            float maxX = float.MinValue;
-            float maxY = float.MinValue;
-            foreach (IEntity we in newEntities)
-            {
-                if (we.Position.X > maxX)
-                    maxX = we.Position.X;
-                else if (we.Position.X < minX)
-                    minX = we.Position.X;
-                if (we.Position.Y > maxY)
-                    maxY = we.Position.Y;
-                else if (we.Position.Y < minY)
-                    minY = we.Position.Y;
-
-            }
-            bool splitOnX = (maxX - minX) > (maxY - minY);
+            AxisAlignedBoundingBox AABB = AxisAlignedBoundingBox.SurroundingAABB(newEntities);
+            int axis = AxisAlignedBoundingBox.MajorAxis(AABB);
+            BoundingAreaFactory.AABBs.Append(AABB);
 
             //step 2: SPLIT ON CHOSEN AXIS
-            if (splitOnX)
+            if (axis == 0)
                 newEntities.Sort((we1, we2) => we1.Position.X.CompareTo(we2.Position.X));
             else
                 newEntities.Sort((we1, we2) => we1.Position.Y.CompareTo(we2.Position.Y));
@@ -114,7 +101,7 @@ namespace Birds.src.BVH
             return node;
         }
         // newEntities order will be affected 
-        public AABBNode CreateTreeTopDown_SAH(AABBNode parent, List<IEntity> newEntities)
+        public AABBNode CreateTreeTopDown_SAH(AABBNode parent, List<ICollidable> newEntities)
         {
             //step 0: HANDLE EDGE-CASES
             if (parent == null)
@@ -142,10 +129,11 @@ namespace Birds.src.BVH
                     newEntities.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
                 for (int i = 0; i < newEntities.Count - 1; i++)
                 {
-                    IEntity[] entities = newEntities.ToArray();
-                    AxisAlignedBoundingBox AABB1 = AxisAlignedBoundingBox.CombinedAABB(entities[0..i]);
+                    List<ICollidable> entities = newEntities.GetRange(0, i+1);
+                    AxisAlignedBoundingBox AABB1 = AxisAlignedBoundingBox.SurroundingAABB(entities);
                     float cost1 = AABB1.Area;
-                    AxisAlignedBoundingBox AABB2 = AxisAlignedBoundingBox.CombinedAABB(entities[(i + 1)..(entities.Length - 1)]);
+                    entities = newEntities.GetRange(i+1, newEntities.Count-(i+1));
+                    AxisAlignedBoundingBox AABB2 = AxisAlignedBoundingBox.SurroundingAABB(entities);
                     float cost2 = AABB2.Area;
                     float total = cost1 + cost2;
                     if (total < minCost)
@@ -169,11 +157,11 @@ namespace Birds.src.BVH
             return node;
         }
 
-        private AABBNode AllocateLeafNode(IEntity we)
+        private AABBNode AllocateLeafNode(ICollidable we)
         {
             AABBNode leafNode = AllocateNode();
             leafNode.Entity = we;
-            worldEntities.Add(we);
+            entities.Add(we);
             return leafNode;
         }
 
@@ -192,7 +180,7 @@ namespace Birds.src.BVH
         public AABBNode FindBestSibling(AABBNode leafNew)
         {
             AABBNode bestSibling = root;
-            AxisAlignedBoundingBox combinedBest = root.AABB.CombinedAABB(leafNew.AABB);
+            AxisAlignedBoundingBox combinedBest = AxisAlignedBoundingBox.SurroundingAABB(root.AABB, leafNew.AABB);
             float bestCost = combinedBest.Area;
             BoundingAreaFactory.AABBs.Append(combinedBest);
             PriorityQueue<AABBNode, float> queue = new();
@@ -207,7 +195,7 @@ namespace Birds.src.BVH
 
                 if (inheritedCost >= bestCost)
                     return bestSibling;
-                AxisAlignedBoundingBox combined = currentNode.AABB.CombinedAABB(leafNew.AABB);
+                AxisAlignedBoundingBox combined = AxisAlignedBoundingBox.SurroundingAABB(currentNode.AABB, leafNew.AABB);
                 float combinedArea = combined.Area;
                 BoundingAreaFactory.AABBs.Append(combined);
                 float currentCost = combinedArea + inheritedCost;
@@ -229,29 +217,21 @@ namespace Birds.src.BVH
             return bestSibling;
         }
 
-        public void Draw(SpriteBatch sb)
-        {
-            root.Draw(sb);
+        public void CollideWithTree(AABBTree tree){
+            root.Collide(tree.root, CollissionPairs);
         }
 
-        public void ResolveInternalCollissions()
+        //adapted after this program specifically
+        public void ResolveCollissions()
         {
-            HashSet<IEntity> entities = new();
-            foreach ((IEntity, IEntity) pair in CollissionPairs)
+            foreach ((ICollidable, ICollidable) pair in CollissionPairs)
             {
-                entities.Add(pair.Item1);
-                entities.Add(pair.Item2);
-            }
-            foreach (IEntity e in entities)
-                if(e is WorldEntity we)
-                    we.GenerateAxes();
-            foreach ((IEntity, IEntity) pair in CollissionPairs)
-            {
-                if (pair.Item1.CollidesWith(pair.Item2))
-                {
-                    pair.Item1.Collide(pair.Item2);
-                    pair.Item2.Collide(pair.Item1);
+                if(pair.Item1 is IEntity e1 && pair.Item2 is IEntity e2){
+                    e1.Collide(e2);
+                    e2.Collide(e1);
                 }
+                else
+                    pair.Item1.Collide(pair.Item2);
             }
             CollissionPairs.Clear();
         }
@@ -259,7 +239,7 @@ namespace Birds.src.BVH
         private void RebuildTree()
         {
             UnravelTree();
-            foreach (WorldEntity we in worldEntities)
+            foreach (ICollidable we in entities)
                 Add(we);
         }
         private void UnravelTree()
@@ -275,8 +255,7 @@ namespace Birds.src.BVH
                     {
                         if (child != null)
                         {
-                            if (child.Entity == null)
-                                nodesToRemove.Push(child);
+                            nodesToRemove.Push(child);
                         }
                     }
                     freeNodes.Push(currentNode);
@@ -287,10 +266,10 @@ namespace Birds.src.BVH
 
         public void Update(GameTime gameTime)
         {
-            root.Update(gameTime);
-            UpdateTree(worldEntities.ToList());
+            //root.Update(gameTime); nothing is done in it right now
+            UpdateTree(entities.ToList());
             GetInternalCollissions();
-            ResolveInternalCollissions();
+            ResolveCollissions();
         }
         public void GetInternalCollissions(){
             //if(root != null)

@@ -32,13 +32,13 @@ namespace Birds.src.BVH
         public int Count { get; set; }
         public Vector2 MassCenter { get; private set; }
         public AxisAlignedBoundingBox AABB { get; private set; }
-        public IEntity Entity
+        public ICollidable Entity
         {//=!null implies leaf
             get { return entity; }
             set
             {
                 entity = value;
-                AABB = new AxisAlignedBoundingBox(entity.BoundingArea);
+                AABB = AxisAlignedBoundingBox.SurroundingAABB(entity.BoundingArea);
                 position = entity.Position;
                 radius = Entity.Radius;
                 Count = 1;
@@ -46,7 +46,7 @@ namespace Birds.src.BVH
                 MassCenter = entity.Position;
             }
         }
-        private IEntity entity;
+        private ICollidable entity;
         public AABBNode()
         {
         }
@@ -67,22 +67,24 @@ namespace Birds.src.BVH
 
         public void RefitBoundingBox()
         {
+            if (AABB != null)
+                BoundingAreaFactory.AABBs.Push(AABB);
             if (children.Count(x => x != null) == 1)
             {
                 if (children[0] != null)
-                {
-                    AABB = children[0].AABB; //BoundingCircle = new CollidableCircle(children[0].BoundingCircle.Position, children[0].BoundingCircle.Radius);
+                { 
+                    AABB = AxisAlignedBoundingBox.SurroundingAABB(children[0].AABB);
                     Count = children[0].Count;
                 }
                 else
                 {
-                    AABB = children[1].AABB;
+                    AABB = AABB = AxisAlignedBoundingBox.SurroundingAABB(children[1].AABB);
                     Count = children[1].Count;
                 }
             }
             else if (children.Count(x => x != null) == 2)
             {
-                AABB = children[0].AABB.CombinedAABB(children[1].AABB);
+                AABB = AxisAlignedBoundingBox.SurroundingAABB(children[0].AABB, children[1].AABB);
                 Count = children[0].Count + children[1].Count;
             }
             position = AABB.Position;
@@ -122,22 +124,8 @@ namespace Birds.src.BVH
         }
         #endregion
         #region update-logic
-        public void Draw(SpriteBatch sb)
-        {
-            if (Entity != null)
-                Entity.Draw(sb);
-            else
-            {
-                //float scale = 3+((int)Mass/14);
-                //Vector2 origin = Vector2.Zero; //new Vector2(-Game1.font.Texture.Width/2, -Game1.font.Texture.Height/2);
-                //sb.DrawString(Game1.font, ((int)Mass).ToString(), MassCenter, Color.Red, 0, origin, scale, SpriteEffects.None, 0);
-                foreach (AABBNode c in children)
-                    if (c != null)
-                        c.Draw(sb);
-            }
-        }
 
-        public void GetInternalCollissions(List<(IEntity, IEntity)> collissions)
+        public void GetInternalCollissions(List<(ICollidable, ICollidable)> collissions)
         {
             if (children.Count(x => x != null) == 2)
                 children[0].Collide(children[1], collissions);
@@ -147,7 +135,7 @@ namespace Birds.src.BVH
                 children[1].GetInternalCollissions(collissions);
         }
 
-        public void Collide(AABBNode node, List<(IEntity, IEntity)> collissions)
+        public void Collide(AABBNode node, List<(ICollidable, ICollidable)> collissions)
         {
             if (AABB.CollidesWith(node.AABB))
             {
@@ -165,59 +153,11 @@ namespace Birds.src.BVH
                 }
                 else
                 {
-                    collissions.Add((this.Entity, node.Entity));
+                    if(Entity.CollidesWith(node.Entity))
+                        collissions.Add((this.Entity, node.Entity));
                 }
             }
         }
-        /*public void ApplyInternalGravityNLOGN() //does not scale well... poor tree due to incremental?
-        {
-            Vector2 distanceFromController;
-            if(children[0] != null){
-                if(children[1] != null){
-                    children[0].ApplyGravityTo(children[1].MassCenter, Game1.GRAVITY*children[1].Mass);
-                    children[1].ApplyGravityTo(children[0].MassCenter, Game1.GRAVITY*children[0].Mass);
-                }
-            }
-            if(children[0] != null)
-                children[0].ApplyInternalGravityNLOGN();
-            if(children[1] != null)
-                children[1].ApplyInternalGravityNLOGN();
-            /*foreach (BoundingCircleNode child in children)
-            {
-                if (child != null)
-                {                     
-                    float distanceFromController = (MassCenter - child.MassCenter).Length();
-                    if (distanceFromController > 1)//entity.Radius)
-                        child.AccelerateTo(MassCenter, Game1.GRAVITY * (Mass - child.Mass) / (float)Math.Pow((distanceFromController), 1)); //2d gravity r is raised to 1
-
-                    child.ApplyInternalGravityNLOGN();
-                }
-            }
-        }*/
-
-        /*private void ApplyGravityTo(Vector2 massCenter, float forceBeforeDistance)
-        {
-            if (WorldEntity != null)
-            {
-                float distanceFromController = (massCenter - WorldEntity.Position).Length();
-                if (distanceFromController > 1)
-                    WorldEntity.AccelerateTo(massCenter, forceBeforeDistance / distanceFromController);
-            }
-            else
-                foreach (AABBNode node in children)
-                    if (node != null)
-                        node.ApplyGravityTo(massCenter, forceBeforeDistance);
-        }*/
-
-        /*public void AccelerateTo(Vector2 position, float force)
-        {
-            if (WorldEntity != null)
-                WorldEntity.AccelerateTo(position, force);
-            else
-                foreach (AABBNode node in children)
-                    if (node != null)
-                        node.AccelerateTo(position, force);
-        }*/
 
         public void Update(GameTime gameTime)
         {

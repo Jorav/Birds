@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using Birds.src.controllers;
+using Birds.src.utility;
 
 namespace Birds.src//new
 {
@@ -21,7 +22,8 @@ namespace Birds.src//new
         SpriteBatch _spriteBatch;
         private AABBTree controllerTree;
         private Camera camera;
-        private Controller controller;
+        private Player player;
+        private GameController gameController;
         //private PerformanceMeasurer performanceMeasurer;
         //private MeanSquareError meanSquareError;
         public static int ScreenWidth;
@@ -59,10 +61,21 @@ namespace Birds.src//new
         /// </summary>
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            Input input = new Input()
+            {
+                Up = Keys.W,
+                Down = Keys.S,
+                Left = Keys.A,
+                Right = Keys.D,
+                Pause = Keys.Escape,
+                Build = Keys.B,
+                Enter = Keys.Enter,
+            };
+            // use this and Content to load your game content here
             _graphics.ApplyChanges();
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+
             Texture2D textureParticle = Content.Load<Texture2D>("RotatingHull");
             font = Content.Load<SpriteFont>("font");
             //Sprite spriteParticle = new Sprite(textureParticle);
@@ -84,15 +97,24 @@ namespace Birds.src//new
             //string[] ConfigVar = EntityFactory.ReadConfig();
             //GRAVITY = float.Parse(ConfigVar[2]);
             //List<WorldEntity> returnedList = EntityFactory.EntFacImplementation(ConfigVar[0], ConfigVar[1], textureParticle);
-            controller = new Controller(returnedList);
+            player = new Player(returnedList, input);
 
-            /*foreach(WorldEntity w in returnedList)
-            {
-                controllerTree.Add(w);
-            }*/
-            camera = new Camera(controller) { AutoAdjustZoom = true };
-            //performanceMeasurer = new PerformanceMeasurer();
+            camera = new Camera(player) { AutoAdjustZoom = true };
+            input.Camera = camera;
 
+            List<IEntity> list1 = new List<IEntity>();
+            list1.Add(new WorldEntity(textureParticle, new Vector2(23, 245)));
+            Controller AI1 = new Controller(list1);
+            List<IEntity> list2 = new List<IEntity>();
+            list2.Add(new WorldEntity(textureParticle, new Vector2(223, 245)));
+            Controller AI2 = new Controller(list2);
+            List<IEntity> list3 = new List<IEntity>();
+            list3.Add(new WorldEntity(textureParticle, new Vector2(23, 45)));
+            Controller AI3 = new Controller(list3);
+            List<IEntity> list4 = new List<IEntity>();
+            list4.Add(new WorldEntity(textureParticle, new Vector2(223, 45)));
+            Controller AI4 = new Controller(list4);
+            gameController = new GameController(new List<Controller> { player, AI1, AI2, AI3, AI4 });
             // TODO: Use this.Content to load your game content here
         }
 
@@ -129,7 +151,8 @@ namespace Birds.src//new
             // TODO: Add your update logic here
             ScreenWidth = _graphics.PreferredBackBufferWidth;
             ScreenHeight = _graphics.PreferredBackBufferHeight;
-            controller.Update(gameTime);
+            gameController.Update(gameTime);
+            camera.Update();
             camera.Update();
 
             base.Update(gameTime);
@@ -145,7 +168,7 @@ namespace Birds.src//new
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(transformMatrix: camera.Transform);
-            controller.Draw(_spriteBatch);
+            gameController.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);
