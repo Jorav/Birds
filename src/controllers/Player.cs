@@ -95,7 +95,8 @@ namespace Birds.src.controllers
                     if ((tl.State == TouchLocationState.Pressed)
                             || (tl.State == TouchLocationState.Moved))
                     {
-                        accelerationVector = Vector2.Normalize(Input.MousePositionGameCoords - Position);
+                        RotateTo((tl.Position - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Input.Camera.Zoom + Input.Camera.Position);
+                        accelerationVector = Vector2.Normalize((tl.Position - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Input.Camera.Zoom + Input.Camera.Position - Position);
                         Accelerate(accelerationVector);
                     }
                 }
