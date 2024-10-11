@@ -167,7 +167,7 @@ namespace Birds.src//new
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            _spriteBatch.Begin(transformMatrix: camera.Transform);
+            _spriteBatch.Begin(transformMatrix: camera.Transform, samplerState: SamplerState.PointClamp);
             gameController.Draw(_spriteBatch);
             _spriteBatch.End();
 
