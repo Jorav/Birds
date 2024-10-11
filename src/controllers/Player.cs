@@ -2,6 +2,7 @@ using Birds.src;
 using Birds.src.utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -84,7 +85,22 @@ namespace Birds.src.controllers
             }
                                                        
                                                        */
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+
+            TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
+            if (tc.IsConnected)
+            {
+                TouchCollection touchCollection = TouchPanel.GetState();
+                foreach (TouchLocation tl in touchCollection)
+                {
+                    if ((tl.State == TouchLocationState.Pressed)
+                            || (tl.State == TouchLocationState.Moved))
+                    {
+                        accelerationVector = Vector2.Normalize(Input.MousePositionGameCoords - Position);
+                        Accelerate(accelerationVector);
+                    }
+                }
+            }
+            else if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 accelerationVector = Vector2.Normalize(Input.MousePositionGameCoords - Position);
                 Accelerate(accelerationVector);
