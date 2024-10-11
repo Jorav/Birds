@@ -91,7 +91,7 @@ namespace Birds.src
             if (distance2 < 5)
                 distance2 = 5;
             float radius = Radius * (e.Mass + Mass) / 2;
-            Vector2 overlapRepulsion = 20f * Vector2.Normalize(position - e.Position) / distance2;
+            Vector2 overlapRepulsion = 30f * Vector2.Normalize(position - e.Position) / distance2;
             TotalExteriorForce += overlapRepulsion;
         }
 

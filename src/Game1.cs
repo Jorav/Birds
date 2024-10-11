@@ -51,6 +51,7 @@ namespace Birds.src//new
             // TODO: Add your initialization logic here
             ScreenWidth = _graphics.PreferredBackBufferWidth;
             ScreenHeight = _graphics.PreferredBackBufferHeight;
+            _graphics.PreferMultiSampling = true;
             base.Initialize();
 
         }
@@ -167,7 +168,7 @@ namespace Birds.src//new
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            _spriteBatch.Begin(transformMatrix: camera.Transform, samplerState: SamplerState.PointClamp);
+            _spriteBatch.Begin(transformMatrix: camera.Transform, sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend, samplerState: SamplerState.AnisotropicClamp);
             gameController.Draw(_spriteBatch);
             _spriteBatch.End();
 
