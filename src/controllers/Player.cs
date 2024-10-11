@@ -49,7 +49,7 @@ namespace Birds.src.controllers
         {
             if (Input == null)
                 return;
-            Vector2 accelerationVector = Vector2.Zero;
+            Vector2 accelerationVector = Vector2.Zero;/*
             if (Keyboard.GetState().IsKeyDown(Input.Up) ^ Keyboard.GetState().IsKeyDown(Input.Down))
             {
                 if (Keyboard.GetState().IsKeyDown(Input.Up))
@@ -82,6 +82,14 @@ namespace Birds.src.controllers
                 foreach (IEntity c in entities)
                     c.Accelerate(accelerationVector);
             }
+                                                       
+                                                       */
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                accelerationVector = Vector2.Normalize(Input.MousePositionGameCoords - Position);
+                Accelerate(accelerationVector);
+            }
+            
         }
         public new static String GetName()
         {
