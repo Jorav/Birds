@@ -63,7 +63,22 @@ namespace Birds.src.utility
             }
         }
         private int trackedTLID = -1;
-        public bool TouchPadActive { get { TouchPanelCapabilities tc = TouchPanel.GetCapabilities(); return tc.IsConnected; } }
+        public bool TouchPadActive { 
+            get 
+            { 
+                TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
+                if(tc.IsConnected)
+                {
+                    TouchCollection touchCollection = TouchPanel.GetState();
+                    foreach (TouchLocation tl in touchCollection)
+                    {
+                        if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
+                            return true;
+                    }
+                }
+                return false;
+            } 
+        }
         private bool pauseDown;
         public bool PauseClicked //OBS, new state of button needs to change each update
         {
