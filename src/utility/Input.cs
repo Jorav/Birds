@@ -33,7 +33,7 @@ namespace Birds.src.utility
                         {
                             if (tl.Id == trackedTLID)
                             {
-                                if ((tl.State != TouchLocationState.Pressed) && (tl.State != TouchLocationState.Moved))
+                                if (tl.State == TouchLocationState.Released)
                                     trackedTLID = -1;
                             }
                         }
