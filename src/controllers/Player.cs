@@ -89,7 +89,7 @@ namespace Birds.src.controllers
             {
                 Vector2 touchpadPosition = Input.TouchPadPositionGameCoords;
                 RotateTo(touchpadPosition);
-                accelerationVector = Vector2.Normalize(touchpadPosition);
+                accelerationVector = Vector2.Normalize(touchpadPosition - Position);
                 Accelerate(accelerationVector);
             }
             else if (Mouse.GetState().LeftButton == ButtonState.Pressed)
