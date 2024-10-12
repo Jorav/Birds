@@ -18,7 +18,9 @@ namespace Birds.src.utility
         public float Width { get { return Game1.ScreenWidth / Zoom; } }
         public float Height { get { return Game1.ScreenHeight / Zoom; } }
         public bool AutoAdjustZoom { get; set; }
-        public float GameZoom { get { if (Controller != null) return 1.2f*Math.Min(Game1.ScreenWidth, Game1.ScreenHeight) / (Math.Min(Game1.ScreenWidth, Game1.ScreenHeight) + 1 * Controller.Radius); else return 1; } }
+        public float GameZoom { get { if (Controller != null) return Math.Min(Game1.ScreenWidth, Game1.ScreenHeight) / (1000 + 1 * Controller.Radius); else return 1; } }
+        //        public float GameZoom { get { if (Controller != null) return  Game1.ScreenWidth / 3 / Controller.Radius; else return 1; } }
+
         public Controller Controller { get; set; }
         private float zoomSpeed;
 

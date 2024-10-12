@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,6 +18,52 @@ namespace Birds.src.utility
         public Keys Build { get; set; }
         public Keys Enter { get; set; }
         public Vector2 MousePositionGameCoords { get { return (Mouse.GetState().Position.ToVector2() - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2) )/Camera.Zoom + Camera.Position; } }
+        public Vector2 TouchPadPositionGameCoords { get { return (TouchPadPosition - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Camera.Zoom + Camera.Position; } }
+        public Vector2 TouchPadPosition
+        {
+            get
+            {
+                TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
+                if (tc.IsConnected)
+                {
+                    TouchCollection touchCollection = TouchPanel.GetState();
+                    if (trackedTLID != -1) //remove last tracked touch location if its not active anymore
+                    {
+                        foreach (TouchLocation tl in touchCollection)
+                        {
+                            if (tl.Id == trackedTLID)
+                            {
+                                if ((tl.State != TouchLocationState.Pressed) && (tl.State != TouchLocationState.Moved))
+                                    trackedTLID = -1;
+                            }
+                        }
+                    }
+                    if (trackedTLID == -1)//track new location if untracked
+                    {
+                        foreach (TouchLocation tl in touchCollection)
+                        {
+                            if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
+                            {
+                                trackedTLID = tl.Id;
+                            }
+                        }
+                    }
+                    if (trackedTLID != -1) //return to the tracked location
+                    {
+                        foreach (TouchLocation tl in touchCollection)
+                        {
+                            if (tl.Id == trackedTLID && ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved)))
+                            {
+                                return tl.Position;
+                            }
+                        }
+                    }
+                }
+                return Vector2.Zero;
+            }
+        }
+        private int trackedTLID = -1;
+        public bool TouchPadActive { get { TouchPanelCapabilities tc = TouchPanel.GetCapabilities(); return tc.IsConnected; } }
         private bool pauseDown;
         public bool PauseClicked //OBS, new state of button needs to change each update
         {

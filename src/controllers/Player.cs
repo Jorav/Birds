@@ -48,10 +48,11 @@ namespace Birds.src.controllers
 
         protected void Accelerate() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
         {
+
             if (Input == null)
                 return;
-            Vector2 accelerationVector = Vector2.Zero;/*
-            if (Keyboard.GetState().IsKeyDown(Input.Up) ^ Keyboard.GetState().IsKeyDown(Input.Down))
+            Vector2 accelerationVector = Vector2.Zero;
+            /*if (Keyboard.GetState().IsKeyDown(Input.Up) ^ Keyboard.GetState().IsKeyDown(Input.Down))
             {
                 if (Keyboard.GetState().IsKeyDown(Input.Up))
                 {
@@ -80,33 +81,23 @@ namespace Birds.src.controllers
             if (!accelerationVector.Equals(Vector2.Zero))
             {
                 accelerationVector.Normalize();
-                foreach (IEntity c in entities)
+                foreach (IControllable c in Controllables)
                     c.Accelerate(accelerationVector);
-            }
-                                                       
-                                                       */
+            }*/
 
-            TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
-            if (tc.IsConnected)
+            if (Input.TouchPadActive)
             {
-                TouchCollection touchCollection = TouchPanel.GetState();
-                foreach (TouchLocation tl in touchCollection)
-                {
-                    if ((tl.State == TouchLocationState.Pressed)
-                            || (tl.State == TouchLocationState.Moved))
-                    {
-                        RotateTo((tl.Position - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Input.Camera.Zoom + Input.Camera.Position);
-                        accelerationVector = Vector2.Normalize((tl.Position - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Input.Camera.Zoom + Input.Camera.Position - Position);
-                        Accelerate(accelerationVector);
-                    }
-                }
+                Vector2 touchpadPosition = Input.TouchPadPositionGameCoords;
+                RotateTo(touchpadPosition);
+                accelerationVector = Vector2.Normalize(touchpadPosition);
+                Accelerate(accelerationVector);
             }
             else if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 accelerationVector = Vector2.Normalize(Input.MousePositionGameCoords - Position);
                 Accelerate(accelerationVector);
             }
-            
+
         }
         public new static String GetName()
         {
