@@ -72,6 +72,11 @@ namespace Birds.src.utility
                     TouchCollection touchCollection = TouchPanel.GetState();
                     foreach (TouchLocation tl in touchCollection)
                     {
+                        if (tl.Id == trackedTLID)
+                        {
+                            if (tl.State == TouchLocationState.Released)
+                                trackedTLID = -1;
+                        }
                         if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
                             return true;
                     }
