@@ -24,6 +24,8 @@ namespace Birds.src//new
         private Camera camera;
         private Player player;
         private GameController gameController;
+        private Background background1;
+        private Background background2;
         //private PerformanceMeasurer performanceMeasurer;
         //private MeanSquareError meanSquareError;
         public static int ScreenWidth;
@@ -78,6 +80,8 @@ namespace Birds.src//new
 
 
             Texture2D textureParticle = Content.Load<Texture2D>("RotatingHull");
+            Texture2D cloud = Content.Load<Texture2D>("cloud");
+            Texture2D solar = Content.Load<Texture2D>("solar");
             font = Content.Load<SpriteFont>("font");
             //Sprite spriteParticle = new Sprite(textureParticle);
             controllerTree = new AABBTree();
@@ -105,6 +109,7 @@ namespace Birds.src//new
 
             List<IEntity> list1 = new List<IEntity>();
             list1.Add(new WorldEntity(textureParticle, new Vector2(23, 245)));
+            list1.Add(new WorldEntity(textureParticle, new Vector2(132, 265)));
             Controller AI1 = new Controller(list1);
             List<IEntity> list2 = new List<IEntity>();
             list2.Add(new WorldEntity(textureParticle, new Vector2(223, 245)));
@@ -116,6 +121,21 @@ namespace Birds.src//new
             list4.Add(new WorldEntity(textureParticle, new Vector2(223, 45)));
             Controller AI4 = new Controller(list4);
             gameController = new GameController(new List<Controller> { player, AI1, AI2, AI3, AI4 });
+
+
+            List<IEntity> backgroundEntities = new List<IEntity>()
+                    {
+                        new WorldEntity(cloud, new Vector2(11, 11)){Scale = 2},
+                        new WorldEntity(cloud, new Vector2(51, 310)){Scale = 3},
+                        new WorldEntity(cloud, new Vector2(511, 4)){Scale = 2.5f},
+                        new WorldEntity(cloud, new Vector2(311, 456)){Scale = 1.5f},
+                        new WorldEntity(cloud, new Vector2(1311, 856)){Scale = 3},
+                        new WorldEntity(cloud, new Vector2(512, 712)){Scale = 2},
+
+                    };
+            background1 = new Background(backgroundEntities, 1.5f, camera);
+            List<IEntity> backgrounds2 = new List<IEntity> { new WorldEntity(solar, new Vector2(512, 712)) { Scale = 4 } };
+            background2 = new Background(backgrounds2, 0.2f, camera);
             // TODO: Use this.Content to load your game content here
         }
 
@@ -154,7 +174,8 @@ namespace Birds.src//new
             ScreenHeight = _graphics.PreferredBackBufferHeight;
             gameController.Update(gameTime);
             camera.Update();
-            camera.Update();
+            background1.Update(gameTime);
+            background2.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -169,7 +190,10 @@ namespace Birds.src//new
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(transformMatrix: camera.Transform, sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend, samplerState: SamplerState.AnisotropicClamp);
+            background2.Draw(_spriteBatch);
             gameController.Draw(_spriteBatch);
+            background1.Draw(_spriteBatch);
+
             _spriteBatch.End();
 
             base.Draw(gameTime);

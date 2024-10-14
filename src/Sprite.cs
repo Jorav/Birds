@@ -14,9 +14,12 @@ namespace Birds.src
         public int Width { get { return (int)texture.Width; } }
         public Color Color { get; set; }
         public bool isVisible = true;
+        
+        public float Scale { get; set; }
 
-        public Sprite(Texture2D texture)
+        public Sprite(Texture2D texture, float scale = 1f)
         {
+            this.Scale = scale;
             this.texture = texture;
             Origin = new Vector2(texture.Width / 2, texture.Height / 2);
             Color = Color.White;
@@ -27,7 +30,7 @@ namespace Birds.src
         public void Draw(SpriteBatch sb)
         {
             if (isVisible)
-                sb.Draw(texture, Position, null, Color, Rotation, Origin, 1, SpriteEffects.None, 0f);
+                sb.Draw(texture, Position, null, Color, Rotation, Origin, Scale, SpriteEffects.None, 0f);
         }
     }
 }

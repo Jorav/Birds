@@ -24,7 +24,7 @@ namespace Birds.src.utility
         public Controller Controller { get; set; }
         private float zoomSpeed;
 
-        public Camera([OptionalAttribute] Controller controller, float zoomSpeed = 0.01f)
+        public Camera([OptionalAttribute] Controller controller, float zoomSpeed = 0.1f)
         {
             if (controller != null)
             {

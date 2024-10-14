@@ -22,6 +22,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="bin\**" />
+    <Content Remove="obj\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="bin\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="Pages\Index.razor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="src\bounding_areas\AxisAlignedBoundingBox.cs" />
@@ -31,6 +40,7 @@
     <Compile Include="src\bounding_areas\OrientedBoundingBox.cs" />
     <Compile Include="src\BVH\AABBNode.cs" />
     <Compile Include="src\BVH\AABBTree.cs" />
+    <Compile Include="src\controllers\Background.cs" />
     <Compile Include="src\controllers\CohesiveController.cs" />
     <Compile Include="src\controllers\Controller.cs" />
     <Compile Include="src\controllers\GameController.cs" />
