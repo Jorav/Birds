@@ -18,7 +18,7 @@ namespace Birds.src
         public virtual float Friction { get; set; } // percent, where 0.1f = 10% friction
         public Vector2 TotalExteriorForce;
 
-        public Movable(Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.15f)
+        public Movable(Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.8f)
         {
             this.position = position;
             this.rotation = rotation;
