@@ -10,8 +10,8 @@ using System.Text;
 
 namespace Birds.src.menu
 {
-    class PauseState : MenuState
-    {
+    class PauseState //: MenuState
+    {/*
         State previousState;
         public PauseState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input) : base(game, graphicsDevice, content, input)
         {
@@ -104,6 +104,6 @@ namespace Birds.src.menu
         private void QuitGameButton_Click(object sender, EventArgs e)
         {
             game.Exit();
-        }
+        }*/
     }
 }
