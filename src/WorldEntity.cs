@@ -65,7 +65,7 @@ namespace Birds.src
 
         public static float REPULSIONDISTANCE = 100;
         #endregion
-        public WorldEntity(Texture2D texture, Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.08f, bool isVisible = true, bool isCollidable = true) : base(position, rotation, mass, thrust, friction)
+        public WorldEntity(Texture2D texture, Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, bool isVisible = true, bool isCollidable = true) : base(position, rotation, mass, thrust, friction)
         {
             this.sprite = new Sprite(texture);
             OBB = new OrientedBoundingBox(position, rotation, sprite.Width, sprite.Height);

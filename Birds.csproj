@@ -45,18 +45,30 @@
     <Compile Include="src\controllers\Controller.cs" />
     <Compile Include="src\controllers\GameController.cs" />
     <Compile Include="src\controllers\Player.cs" />
-    <Compile Include="src\EntityFactory.cs" />
     <Compile Include="src\Game1.cs" />
     <Compile Include="src\ICollidable.cs" />
     <Compile Include="src\IEntity.cs" />
+    <Compile Include="src\menu\controls\Button.cs" />
+    <Compile Include="src\menu\controls\DropDownButton.cs" />
+    <Compile Include="src\menu\controls\EntityButton.cs" />
+    <Compile Include="src\menu\GameState.cs" />
+    <Compile Include="src\menu\IComponent.cs" />
+    <Compile Include="src\menu\MainMenu.cs" />
+    <Compile Include="src\menu\MenuState.cs" />
+    <Compile Include="src\menu\PauseState.cs" />
+    <Compile Include="src\menu\State.cs" />
+    <Compile Include="src\menu\TestState.cs" />
     <Compile Include="src\Movable.cs" />
     <Compile Include="src\PerformanceMeasurer.cs" />
     <Compile Include="src\Sprite.cs" />
     <Compile Include="src\utility\Camera.cs" />
+    <Compile Include="src\utility\factories\ControllerFactory.cs" />
+    <Compile Include="src\utility\factories\EntityFactory.cs" />
     <Compile Include="src\utility\IDs.cs" />
     <Compile Include="src\utility\Input.cs" />
+    <Compile Include="src\visual\FadingText.cs" />
     <Compile Include="src\WorldEntity.cs" />
-    <KniContentReference Include="Content\BirdsContent.mgcb"/>
+    <KniContentReference Include="Content\BirdsContent.mgcb" />
   </ItemGroup>
 
   <ItemGroup>

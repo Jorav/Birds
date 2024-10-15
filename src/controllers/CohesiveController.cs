@@ -30,7 +30,7 @@ namespace Birds.src.controllers
       {
         distanceFromController = Position - c1.Position;
         if (distanceFromController.Length() > c1.Radius)
-          c1.Accelerate(Vector2.Normalize(Position - c1.Position), 0.4f * (float)((distanceFromController.Length() - c1.Radius) / AverageDistance()) / c1.Mass);
+          c1.Accelerate(Vector2.Normalize(Position - c1.Position), 0.5f * (float)((distanceFromController.Length() - c1.Radius) / AverageDistance()) / c1.Mass);
       }
     }
     private void ApplyInterParticleGravity()

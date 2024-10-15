@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Birds.src.menu;
 
 namespace Birds.src
 {
-    public class Sprite
+    public class Sprite : IComponent
     {
         public Texture2D texture;
         public float Rotation { get; set; }

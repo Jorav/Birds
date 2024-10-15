@@ -14,7 +14,7 @@ namespace Birds.src.controllers
   {
     #region Attributes
     protected List<IEntity> entities;
-    public List<IEntity> Entities { get { return entities; } set { SetControllables(value); } }
+    public List<IEntity> Entities { get { return entities; } set { SetEntities(value); } }
     public BoundingCircle BoundingCircle { get; set; }
     private AABBTree collisionManager;
     protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
@@ -48,8 +48,8 @@ namespace Birds.src.controllers
     }
     private Color color;
     public Color Color { set { foreach (IEntity c in Entities) c.Color = value; color = value; } get { return color; } }
-    public IBoundingArea BoundingArea {get{return BoundingCircle;}}
-    public bool IsCollidable {get; set;}
+    public IBoundingArea BoundingArea { get { return BoundingCircle; } }
+    public bool IsCollidable { get; set; }
 
     #endregion
     #region Constructors
@@ -57,7 +57,7 @@ namespace Birds.src.controllers
     {
       BoundingCircle = new BoundingCircle(Position, Radius);
       collisionManager = new AABBTree();
-      SetControllables(controllables);
+      SetEntities(controllables);
       Team = team;
       SeperatedEntities = new List<Controller>();
       Color = Color.White;
@@ -66,6 +66,7 @@ namespace Birds.src.controllers
     {
       BoundingCircle = new BoundingCircle(Position, Radius);
       collisionManager = new AABBTree();
+      Entities = new();
       if (position == null)
         position = Vector2.Zero;
       //SetControllables(new List<IEntity>() { new WorldEntity(position) });
@@ -87,13 +88,13 @@ namespace Birds.src.controllers
       collisionManager.Update(gameTime);
       //InternalCollission();
     }
-    public virtual void SetControllables(List<IEntity> newControllables)
+    public virtual void SetEntities(List<IEntity> newEntities)
     {
-      if (newControllables != null)
+      if (newEntities != null)
       {
         List<IEntity> oldControllables = Entities;
         entities = new List<IEntity>();
-        foreach (IEntity c in newControllables)
+        foreach (IEntity c in newEntities)
           AddControllable(c);
         if (Entities.Count == 0)
         {
@@ -101,7 +102,7 @@ namespace Birds.src.controllers
         }
         else
         {
-          collisionManager.UpdateTree(newControllables.Cast<ICollidable>().ToList());
+          collisionManager.UpdateTree(newEntities.Cast<ICollidable>().ToList());
         }
       }
     }
@@ -302,7 +303,7 @@ namespace Birds.src.controllers
 
     public bool CollidesWith(ICollidable otherEntity)
     {
-      if(otherEntity is Controller c)
+      if (otherEntity is Controller c)
         return CollidesWith(c);
       else
         throw new Exception("not supported type");
@@ -314,7 +315,7 @@ namespace Birds.src.controllers
 
     public void Collide(ICollidable otherEntity)
     {
-      if(otherEntity is Controller c)
+      if (otherEntity is Controller c)
         Collide(c);
       else
         throw new Exception("not supported type");
@@ -323,6 +324,11 @@ namespace Birds.src.controllers
     public void Collide(Controller controller)
     {
       collisionManager.CollideWithTree(controller.collisionManager);
+    }
+
+    public static String GetName()
+    {
+      return "No controller";
     }
     #endregion
   }

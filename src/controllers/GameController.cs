@@ -15,6 +15,16 @@ namespace Birds.src.controllers
       collisionManager.UpdateTree(controllers.Cast<ICollidable>().ToList());
     }
 
+    public GameController(){
+      controllers = new();
+    }
+
+    public void Add(Controller c){
+      controllers.Add(c);
+      collisionManager.UpdateTree(controllers.Cast<ICollidable>().ToList());
+    }
+
+
     public void Update(GameTime gameTime){
       foreach(Controller c in controllers)
         c.Update(gameTime);

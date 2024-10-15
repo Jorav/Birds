@@ -20,11 +20,10 @@ namespace Birds.src.utility
         public bool AutoAdjustZoom { get; set; }
         public float GameZoom { get { if (Controller != null) return Math.Min(Game1.ScreenWidth, Game1.ScreenHeight) / (800 + 1 * Controller.Radius); else return 1; } }
         //        public float GameZoom { get { if (Controller != null) return  Game1.ScreenWidth / 3 / Controller.Radius; else return 1; } }
-
         public Controller Controller { get; set; }
         private float zoomSpeed;
 
-        public Camera([OptionalAttribute] Controller controller, float zoomSpeed = 0.1f)
+        public Camera([OptionalAttribute] Controller controller, float zoomSpeed = 0.01f)
         {
             if (controller != null)
             {

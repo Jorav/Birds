@@ -33,6 +33,7 @@ namespace Birds.src.utility
         CIRCULAR_AI,
         INDECISIVE_AI,
         RANDOM_AI,
+        BACKGROUND,
         #endregion
 
         #region TEAMS
