@@ -15,7 +15,7 @@ namespace Birds.src.menu
         {
             this.input = input;
             Texture2D buttonTexture = content.Load<Texture2D>("button");
-            SpriteFont buttonFont = content.Load<SpriteFont>("Font");
+            SpriteFont buttonFont = content.Load<SpriteFont>("font");
             //Sprite background = new Sprite(content.Load<Texture2D>("background/background"));
             //background.Scale = background.Height / Game1.ScreenHeight;
             //background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
@@ -25,7 +25,7 @@ namespace Birds.src.menu
                 Position = new Vector2(Game1.ScreenWidth/2-100, Game1.ScreenHeight/2-100), //or preferably center
                 Text = "Start",
             };
-            //newGameButton.Click += NewGameButton_Click;
+            newGameButton.Click += NewGameButton_Click;
 
             /*Button buildModeButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
@@ -46,7 +46,7 @@ namespace Birds.src.menu
                 Position = new Vector2(Game1.ScreenWidth/2-100, Game1.ScreenHeight/2-100+50), //or preferably center
                 Text = "Quit",
             };
-            //quitButton.Click += QuitButton_Click;
+            quitButton.Click += QuitButton_Click;
 
             components = new List<IComponent>()
             {

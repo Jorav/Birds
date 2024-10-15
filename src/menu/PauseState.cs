@@ -10,14 +10,14 @@ using System.Text;
 
 namespace Birds.src.menu
 {
-    class PauseState //: MenuState
-    {/*
+    class PauseState : MenuState
+    {
         State previousState;
         public PauseState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input) : base(game, graphicsDevice, content, input)
         {
             this.previousState = previousState;
-            Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
-            SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
+            Texture2D buttonTexture = content.Load<Texture2D>("controls/button");
+            SpriteFont buttonFont = content.Load<SpriteFont>("fonts/font");
             Sprite background = new Sprite(content.Load<Texture2D>("background/backgroundGray"));
             background.Scale = background.Height/ Game1.ScreenHeight;
             background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
@@ -104,6 +104,6 @@ namespace Birds.src.menu
         private void QuitGameButton_Click(object sender, EventArgs e)
         {
             game.Exit();
-        }*/
+        }
     }
 }

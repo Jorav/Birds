@@ -19,7 +19,7 @@ namespace Birds.src.menu.controls
         #endregion
 
         #region Properties
-        //public event EventHandler Click;
+        public event EventHandler Click;
         public bool Clicked { get; private set; }
         //public Color PenColour;
         protected Vector2 position;
@@ -75,7 +75,7 @@ namespace Birds.src.menu.controls
         }
         protected void InvokeEvent(EventArgs e)
         {
-            //Click?.Invoke(this, e);
+            Click?.Invoke(this, e);
         }
 
         public virtual void Draw(SpriteBatch spritebatch)
