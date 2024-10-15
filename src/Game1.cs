@@ -109,7 +109,10 @@ namespace Birds.src//new
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if(nextState != null)
+
+            ScreenWidth = _graphics.PreferredBackBufferWidth;
+            ScreenHeight = _graphics.PreferredBackBufferHeight;
+            if (nextState != null)
             {
                 currentState = nextState;
                 nextState = null;

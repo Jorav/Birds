@@ -18,6 +18,7 @@ namespace Birds.src.menu
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            graphicsDevice.Clear(Color.DarkGray);
             spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend, samplerState: SamplerState.AnisotropicClamp);
             foreach (IComponent component in components)
                 component.Draw(spriteBatch);
@@ -26,7 +27,7 @@ namespace Birds.src.menu
         
         public override void Update(GameTime gameTime)
         {
-            graphicsDevice.Clear(Color.DarkGray);
+            
             foreach (IComponent component in components)
                 component.Update(gameTime);
         }
