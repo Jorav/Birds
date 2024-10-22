@@ -69,7 +69,7 @@ namespace Birds.src.menu.controls
             {
                 isHovering = true;
                 //if (currentMouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed)
-                if (currentMouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed)
+                if (Input.IsPressed)
                 {
                     InvokeEvent(new EventArgs());
                 }
