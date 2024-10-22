@@ -34,7 +34,7 @@ namespace Birds.src.menu
                 controller.Add(Player);
             }
             Camera = new Camera(Player);
-            input.Camera = Camera;
+            Input.Camera = Camera;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

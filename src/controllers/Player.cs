@@ -30,7 +30,7 @@ namespace Birds.src.controllers
         {
             if (!actionsLocked)
             {
-                RotateTo(Input.MousePositionGameCoords);
+                RotateTo(Input.PositionGameCoords);
                 Accelerate();
                 //if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     //Shoot(gameTime);
@@ -85,18 +85,24 @@ namespace Birds.src.controllers
                     c.Accelerate(accelerationVector);
             }*/
 
+            if (Input.IsPressed)
+            {
+                accelerationVector = Vector2.Normalize(Input.PositionGameCoords - Position);
+                Accelerate(accelerationVector);
+            }
+            /*
             if (Input.TouchPadActive)
             {
-                Vector2 touchpadPosition = Input.TouchPadPositionGameCoords;
+                Vector2 touchpadPosition = Input.PositionGameCoords;
                 RotateTo(touchpadPosition);
                 accelerationVector = Vector2.Normalize(touchpadPosition - Position);
                 Accelerate(accelerationVector);
             }
             else if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
-                accelerationVector = Vector2.Normalize(Input.MousePositionGameCoords - Position);
+                accelerationVector = Vector2.Normalize(Input.PositionGameCoords - Position);
                 Accelerate(accelerationVector);
-            }
+            }*/
 
         }
         public new static String GetName()

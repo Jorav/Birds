@@ -5,6 +5,7 @@ using Birds.src.visual;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Birds.src.utility;
 
 namespace Birds.src.menu.controls
 {
@@ -48,9 +49,10 @@ namespace Birds.src.menu.controls
             TextNew.IsVisible = true;
             //Scale = 1;
         }
-        public bool MouseIntersects()
+        public bool IsHovering()
         {
-            Rectangle mouseRectangle = new Rectangle(currentMouse.X, currentMouse.Y, 1, 1);
+            Vector2 position = Input.Position;
+            Rectangle mouseRectangle = new Rectangle(((int)Math.Round(position.X)), ((int)Math.Round(position.Y)), 1, 1);
             return mouseRectangle.Intersects(Rectangle);
         }
         public virtual void Update(GameTime gameTime)
@@ -63,7 +65,7 @@ namespace Birds.src.menu.controls
 
         protected virtual void HandleMouse()
         {
-            if (MouseIntersects())
+            if (IsHovering())
             {
                 isHovering = true;
                 //if (currentMouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed)
