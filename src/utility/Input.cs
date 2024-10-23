@@ -17,7 +17,9 @@ namespace Birds.src.utility
         public Keys Pause { get; set; }
         public Keys Build { get; set; }
         public Keys Enter { get; set; }
-        public static Vector2 PositionGameCoords { get { return (Position - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Camera.Zoom + Camera.Position; } }
+        //public static Vector2 PositionGameCoords { get { return (Position - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Camera.Zoom + Camera.Position; } }
+        public static Vector2 PositionGameCoords { get { return Camera.ScreenToWorld(Position);}}
+
         public static Vector2 Position
         {
             get

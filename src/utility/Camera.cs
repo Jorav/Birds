@@ -57,7 +57,7 @@ namespace Birds.src.utility
         private void AdjustPosition()
         {
             PreviousPosition = Position;
-            Position = PreviousPosition + 0.1f*(Controller.Position-PreviousPosition);
+            Position = PreviousPosition + 0.1f * (Controller.Position - PreviousPosition);
         }
 
         private void AdjustZoom(float optimalZoom)
@@ -76,6 +76,14 @@ namespace Birds.src.utility
                 else
                     Zoom = optimalZoom;
             }
+        }
+
+        public Vector2 ScreenToWorld(Vector2 screenPosition)
+        {
+            float x = (screenPosition.X - (Game1.ScreenWidth / 2)) / Zoom + Position.X;
+            float y = (screenPosition.Y - (Game1.ScreenHeight / 2)) / Zoom + Position.Y;
+
+            return new Vector2(x, y);
         }
 
         public void UpdateTransformMatrix()

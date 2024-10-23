@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Diagnostics;
+using Birds.src.factories;
 
 namespace Birds.src.menu
 {
@@ -20,6 +22,10 @@ namespace Birds.src.menu
         public List<IEntity> newEntities;
         public Player Player { get; set; }
         public Camera Camera { get; set; }
+        
+        private bool wasPressed;
+        Stopwatch timer = new Stopwatch();
+        private int doubleClickTreshold = 200;
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute]State previousState) : base(game, graphicsDevice, content, input)
         {
@@ -72,6 +78,36 @@ namespace Birds.src.menu
                     input.Camera = p.Camera;
             }*/
             RunGame(gameTime);
+            CheckDoubleClick();
+        }
+        private void CheckDoubleClick()
+        {
+            if (wasPressed && Input.IsReleased)
+            {
+                if (Player.BoundingCircle.Contains(Input.PositionGameCoords)){
+                    timer.Start();
+                }
+                    
+            }
+            else if (!wasPressed && Input.IsPressed)
+            {
+                if (timer.IsRunning )
+                {
+                    if (timer.ElapsedMilliseconds < doubleClickTreshold && Player.BoundingCircle.Contains(Input.PositionGameCoords))
+                        HandleDoubleClick();
+                    timer.Reset();
+                }
+            }
+            if (Input.IsPressed)
+                wasPressed = true;
+            else
+                wasPressed = false;
+        }
+
+        private void HandleDoubleClick()
+        {
+            //game.ChangeState(new BuildState(game, graphicsDevice, content, this, input, Player));
+            Player.AddControllable(EntityFactory.Create(Player.Position, IDs.ENTITY_DEFAULT));
         }
 
         public void RunGame(GameTime gameTime)
@@ -92,10 +128,6 @@ namespace Birds.src.menu
             foreach (IEntity c in newEntities)
                 controllers.Add(c);
             newEntities.Clear();*/
-
-            //INTERACT
-            /*foreach (IEntity c in controllers)
-                c.InteractWith(controllers);*/
 
             //BACKGROUNDS
             foreach (Background b in backgrounds)

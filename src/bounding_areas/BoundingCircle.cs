@@ -58,6 +58,9 @@ namespace Birds.src.bounding_areas
             return Math.Sqrt(Math.Pow((double)(Position.X) - (double)(c.Position.X), 2) + Math.Pow((double)(Position.Y) - (double)(c.Position.Y), 2)) <= (Radius + c.Radius);
         }
 
+        public bool Contains(Vector2 position){
+            return Vector2.DistanceSquared(position, Position) <= Radius*Radius;
+        }
         public bool CollidesWith(IBoundingArea boundingArea)
         {
             if(boundingArea is BoundingCircle boundingCircle){
