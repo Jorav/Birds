@@ -16,6 +16,7 @@ namespace Birds.src.visual
         private float timer = 0;
         public float MaxTime { get; set; }
         public bool IsVisible { get; set; }
+        public Vector2 Measurements { get {  return font.MeasureString(Text); } }
 
         public FadingText(String Text, Vector2 Position, SpriteFont font = null, float maxTime = 0)
         {

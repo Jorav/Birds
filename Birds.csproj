@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -49,6 +49,7 @@
     <Compile Include="src\ICollidable.cs" />
     <Compile Include="src\IEntity.cs" />
     <Compile Include="src\menu\controls\Button.cs" />
+    <Compile Include="src\menu\controls\ButtonContainer.cs" />
     <Compile Include="src\menu\controls\DropDownButton.cs" />
     <Compile Include="src\menu\controls\EntityButton.cs" />
     <Compile Include="src\menu\GameState.cs" />

@@ -43,6 +43,10 @@ namespace Birds.src.utility
         TEAM_AI,
         #endregion
 
-
+        #region Positions
+        MIDDLE,
+        TOP_RIGHT,
+        NOT_BOUND,
+        #endregion
     }
 }

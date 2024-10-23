@@ -93,6 +93,52 @@ namespace Birds.src.utility
                 }
             }
         }
+        public static bool IsReleased
+        {
+            get
+            {
+                TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
+                if (tc.IsConnected)
+                {
+                    TouchCollection touchCollection = TouchPanel.GetState();
+                    if (trackedTLID == -1)
+                    {
+                        bool anyPressed = false;
+                        foreach (TouchLocation tl in touchCollection)
+                        {
+                            if (tl.State == TouchLocationState.Pressed)
+                            {
+                                anyPressed = true;
+                            }
+                        }
+                        return !anyPressed;
+
+                    }
+                    else
+                    {
+                        foreach (TouchLocation tl in touchCollection)
+                        {
+
+                            if (tl.Id == trackedTLID)
+                            {
+                                if (tl.State == TouchLocationState.Released)
+                                {
+                                    trackedTLID = -1;
+                                    return true;
+                                }
+
+                            }
+                        }
+                    }
+                    return false;
+                }
+                else
+                {
+                    return Mouse.GetState().LeftButton == ButtonState.Released;
+                }
+
+            }
+        }
         //public Vector2 MousePositionGameCoords { get { return (Mouse.GetState().Position.ToVector2() - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2) )/Camera.Zoom + Camera.Position; } }
         //public Vector2 TouchPadPositionGameCoords { get { return (TouchPadPosition - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Camera.Zoom + Camera.Position; } }
         /*public Vector2 TouchPadPosition

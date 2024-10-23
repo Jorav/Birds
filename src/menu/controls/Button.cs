@@ -12,10 +12,8 @@ namespace Birds.src.menu.controls
     public class Button : IComponent
     {
         #region Fields
-        protected MouseState currentMouse;
         //protected SpriteFont font;
         protected internal bool isHovering;
-        protected MouseState previousMouse;
         protected Sprite sprite;
         #endregion
 
@@ -27,6 +25,7 @@ namespace Birds.src.menu.controls
         public virtual Vector2 Position { get { return position; } set { sprite.Position = value; TextNew.Position = value+new Vector2(Rectangle.Width/2, Rectangle.Height/2); position = value; } }
         protected float scale;
         public virtual float Scale { get { return scale; } set { sprite.Scale = value; scale = value; } } //doesnt work with text
+        public Vector2 Dimensions { get { return new Vector2(sprite.Width, sprite.Height); } }
         public Rectangle Rectangle
         {
             get
@@ -57,13 +56,11 @@ namespace Birds.src.menu.controls
         }
         public virtual void Update(GameTime gameTime)
         {
-            previousMouse = currentMouse;
-            currentMouse = Mouse.GetState();
             isHovering = false;
-            HandleMouse();
+            HandleInput();
         }
 
-        protected virtual void HandleMouse()
+        protected virtual void HandleInput()
         {
             if (IsHovering())
             {
