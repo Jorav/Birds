@@ -23,40 +23,71 @@ namespace Birds.src.utility
             TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
             if (tc.IsConnected)
             {
-                TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete | GestureType.FreeDrag | GestureType.DragComplete | GestureType.Hold;
-                while (TouchPanel.IsGestureAvailable)
+                TouchCollection touchCollection = TouchPanel.GetState();
+                int pressedLocations = 0;
+                Vector2? l1 = null;
+                Vector2? l2 = null;
+                foreach (TouchLocation tl in touchCollection)
                 {
-                    GestureSample gesture = TouchPanel.ReadGesture();
-                    if (gesture.GestureType == GestureType.Pinch)
+                    if (tl.State == TouchLocationState.Pressed)
                     {
-                        // current positions
-                        Vector2 a = gesture.Position;
-                        Vector2 b = gesture.Position2;
-                        float dist = Vector2.Distance(a, b);
-
-                        // prior positions
-                        Vector2 aOld = gesture.Position - gesture.Delta;
-                        Vector2 bOld = gesture.Position2 - gesture.Delta2;
-                        float distOld = Vector2.Distance(aOld, bOld);
-
-                        if (!pinching)
-                        {
-                            // start of pinch, record original distance
-                            pinching = true;
-                            pinchInitialDistance = distOld;
-                        }
-
-                        // work out zoom amount based on pinch distance...
-                        float scale = dist/distOld;
-                        Camera.Zoom *= scale;
-                        Camera.AutoAdjustZoom = false;
-                    }
-                    else if (gesture.GestureType == GestureType.PinchComplete)
-                    {
-                        pinching = false;
+                        pressedLocations++;
+                        if (l1 == null)
+                            l1 = tl.Position;
+                        else
+                            l2 = tl.Position;
                     }
                 }
+                if (pressedLocations == 2)
+                {
+                    float distance = Vector2.Distance((Vector2)l1, (Vector2)l2);
+                    if (!pinching)
+                    {
+                        pinchInitialDistance = distance;
+                    }
+                    float scale = distance / pinchInitialDistance;
+                    Camera.Zoom *= scale;
+                    Camera.AutoAdjustZoom = false;
+                }
+                else
+                    pinching = false;
             }
+
+            /*
+            TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete | GestureType.FreeDrag | GestureType.DragComplete | GestureType.Hold;
+            while (TouchPanel.IsGestureAvailable)
+            {
+                GestureSample gesture = TouchPanel.ReadGesture();
+                if (gesture.GestureType == GestureType.Pinch)
+                {
+                    // current positions
+                    Vector2 a = gesture.Position;
+                    Vector2 b = gesture.Position2;
+                    float dist = Vector2.Distance(a, b);
+
+                    // prior positions
+                    Vector2 aOld = gesture.Position - gesture.Delta;
+                    Vector2 bOld = gesture.Position2 - gesture.Delta2;
+                    float distOld = Vector2.Distance(aOld, bOld);
+
+                    if (!pinching)
+                    {
+                        // start of pinch, record original distance
+                        pinching = true;
+                        pinchInitialDistance = distOld;
+                    }
+
+                    // work out zoom amount based on pinch distance...
+                    float scale = dist/distOld;
+                    Camera.Zoom *= scale;
+                    Camera.AutoAdjustZoom = false;
+                }
+                else if (gesture.GestureType == GestureType.PinchComplete)
+                {
+                    pinching = false;
+                }
+            }
+        }*/
             else
             {
                 float scrollValue = Mouse.GetState().ScrollWheelValue;
@@ -80,38 +111,35 @@ namespace Birds.src.utility
                 TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
                 if (tc.IsConnected)
                 {
-                    if (!(TouchPanel.IsGestureAvailable && TouchPanel.ReadGesture().GestureType == GestureType.Pinch))
+                    TouchCollection touchCollection = TouchPanel.GetState();
+                    if (trackedTLID != -1) //remove last tracked touch location if its not active anymore
                     {
-                        TouchCollection touchCollection = TouchPanel.GetState();
-                        if (trackedTLID != -1) //remove last tracked touch location if its not active anymore
+                        foreach (TouchLocation tl in touchCollection)
                         {
-                            foreach (TouchLocation tl in touchCollection)
+                            if (tl.Id == trackedTLID)
                             {
-                                if (tl.Id == trackedTLID)
-                                {
-                                    if (tl.State == TouchLocationState.Released)
-                                        trackedTLID = -1;
-                                }
+                                if (tl.State == TouchLocationState.Released)
+                                    trackedTLID = -1;
                             }
                         }
-                        if (trackedTLID == -1)//track new location if untracked
+                    }
+                    if (trackedTLID == -1)//track new location if untracked
+                    {
+                        foreach (TouchLocation tl in touchCollection)
                         {
-                            foreach (TouchLocation tl in touchCollection)
+                            if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
                             {
-                                if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
-                                {
-                                    trackedTLID = tl.Id;
-                                }
+                                trackedTLID = tl.Id;
                             }
                         }
-                        if (trackedTLID != -1) //return to the tracked location
+                    }
+                    if (trackedTLID != -1) //return to the tracked location
+                    {
+                        foreach (TouchLocation tl in touchCollection)
                         {
-                            foreach (TouchLocation tl in touchCollection)
+                            if (tl.Id == trackedTLID && ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved)))
                             {
-                                if (tl.Id == trackedTLID && ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved)))
-                                {
-                                    return tl.Position;
-                                }
+                                return tl.Position;
                             }
                         }
                     }
