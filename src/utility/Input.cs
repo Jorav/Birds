@@ -48,6 +48,7 @@ namespace Birds.src.utility
                     float scale = distance / pinchInitialDistance;
                     Camera.Zoom *= scale;
                     Camera.AutoAdjustZoom = false;
+                    pinching = true;
                 }
                 else
                     pinching = false;
