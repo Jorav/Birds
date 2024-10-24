@@ -46,8 +46,8 @@ namespace Birds.src.utility
                         }
 
                         // work out zoom amount based on pinch distance...
-                        float scale = (distOld - dist) * 0.05f;
-                        Camera.Zoom /= (1 - scale);
+                        float scale = dist/distOld;
+                        Camera.Zoom *= scale;
                         Camera.AutoAdjustZoom = false;
                     }
                     else if (gesture.GestureType == GestureType.PinchComplete)
@@ -79,35 +79,38 @@ namespace Birds.src.utility
                 TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
                 if (tc.IsConnected)
                 {
-                    TouchCollection touchCollection = TouchPanel.GetState();
-                    if (trackedTLID != -1) //remove last tracked touch location if its not active anymore
+                    if (TouchPanel.IsGestureAvailable && TouchPanel.ReadGesture().GestureType != GestureType.Pinch)
                     {
-                        foreach (TouchLocation tl in touchCollection)
+                        TouchCollection touchCollection = TouchPanel.GetState();
+                        if (trackedTLID != -1) //remove last tracked touch location if its not active anymore
                         {
-                            if (tl.Id == trackedTLID)
+                            foreach (TouchLocation tl in touchCollection)
                             {
-                                if (tl.State == TouchLocationState.Released)
-                                    trackedTLID = -1;
+                                if (tl.Id == trackedTLID)
+                                {
+                                    if (tl.State == TouchLocationState.Released)
+                                        trackedTLID = -1;
+                                }
                             }
                         }
-                    }
-                    if (trackedTLID == -1)//track new location if untracked
-                    {
-                        foreach (TouchLocation tl in touchCollection)
+                        if (trackedTLID == -1)//track new location if untracked
                         {
-                            if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
+                            foreach (TouchLocation tl in touchCollection)
                             {
-                                trackedTLID = tl.Id;
+                                if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
+                                {
+                                    trackedTLID = tl.Id;
+                                }
                             }
                         }
-                    }
-                    if (trackedTLID != -1) //return to the tracked location
-                    {
-                        foreach (TouchLocation tl in touchCollection)
+                        if (trackedTLID != -1) //return to the tracked location
                         {
-                            if (tl.Id == trackedTLID && ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved)))
+                            foreach (TouchLocation tl in touchCollection)
                             {
-                                return tl.Position;
+                                if (tl.Id == trackedTLID && ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved)))
+                                {
+                                    return tl.Position;
+                                }
                             }
                         }
                     }
