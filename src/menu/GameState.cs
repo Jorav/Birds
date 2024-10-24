@@ -22,19 +22,19 @@ namespace Birds.src.menu
         public List<IEntity> newEntities;
         public Player Player { get; set; }
         public Camera Camera { get; set; }
-        
+
         private bool wasPressed;
         Stopwatch timer = new Stopwatch();
-        private int doubleClickTreshold = 300;
+        private int doubleClickTreshold = 400;
 
-        public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute]State previousState) : base(game, graphicsDevice, content, input)
+        public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute] State previousState) : base(game, graphicsDevice, content, input)
         {
             controller = new GameController();
             backgrounds = new List<Background>();
             foregrounds = new List<Background>();
             this.previousState = previousState;
             newEntities = new List<IEntity>();
-            if(Player == null)
+            if (Player == null)
             {
                 Player = new Player(input);
                 controller.Add(Player);
@@ -78,13 +78,29 @@ namespace Birds.src.menu
                     input.Camera = p.Camera;
             }*/
             RunGame(gameTime);
+            HandleScroll();
+            CheckClickOnPlayer();
             CheckDoubleClick();
+            wasPressed = Input.IsPressed;
         }
+
+        private void HandleScroll()
+        {
+            Input.HandleZoom();
+        }
+
+        private void CheckClickOnPlayer()
+        {
+            if (!wasPressed && Input.IsPressed && Player.BoundingCircle.Contains(Input.PositionGameCoords))
+            {
+            }
+        }
+
         private void CheckDoubleClick()
         {
             if (!wasPressed && Input.IsPressed)
             {
-                if (timer.IsRunning )
+                if (timer.IsRunning)
                 {
                     if (timer.ElapsedMilliseconds < doubleClickTreshold && Player.BoundingCircle.Contains(Input.PositionGameCoords))
                         HandleDoubleClick();
@@ -98,10 +114,6 @@ namespace Birds.src.menu
                     }
                 }
             }
-            if (Input.IsPressed)
-                wasPressed = true;
-            else
-                wasPressed = false;
         }
 
         private void HandleDoubleClick()

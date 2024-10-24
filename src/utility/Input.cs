@@ -18,8 +18,60 @@ namespace Birds.src.utility
         public Keys Build { get; set; }
         public Keys Enter { get; set; }
         //public static Vector2 PositionGameCoords { get { return (Position - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Camera.Zoom + Camera.Position; } }
-        public static Vector2 PositionGameCoords { get { return Camera.ScreenToWorld(Position);}}
+        public static void HandleZoom()
+        {
+            TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
+            if (tc.IsConnected)
+            {
+                if (TouchPanel.IsGestureAvailable)
+                {
+                    GestureSample gesture = TouchPanel.ReadGesture();
+                    if (gesture.GestureType == GestureType.Pinch)
+                    {
+                        // current positions
+                        Vector2 a = gesture.Position;
+                        Vector2 b = gesture.Position2;
+                        float dist = Vector2.Distance(a, b);
 
+                        // prior positions
+                        Vector2 aOld = gesture.Position - gesture.Delta;
+                        Vector2 bOld = gesture.Position2 - gesture.Delta2;
+                        float distOld = Vector2.Distance(aOld, bOld);
+
+                        if (!pinching)
+                        {
+                            // start of pinch, record original distance
+                            pinching = true;
+                            pinchInitialDistance = distOld;
+                        }
+
+                        // work out zoom amount based on pinch distance...
+                        float scale = (distOld - dist) * 0.05f;
+                        Camera.Zoom /= (1 - scale);
+                        Camera.AutoAdjustZoom = false;
+                    }
+                    else if (gesture.GestureType == GestureType.PinchComplete)
+                    {
+                        pinching = false;
+                    }
+                }
+            }
+            else
+            {
+                float scrollValue = Mouse.GetState().ScrollWheelValue;
+                if (previousScrollValue - scrollValue != 0)
+                {
+                    Camera.Zoom /= (float)Math.Pow(0.999, (scrollValue - previousScrollValue));
+                    Camera.AutoAdjustZoom = false;
+                }
+                previousScrollValue = scrollValue;
+            }
+        }
+        private static float previousScrollValue;
+        private static bool pinching = false;
+        private static float pinchInitialDistance;
+        float previousZoomChange = 0;
+        public static Vector2 PositionGameCoords { get { return Camera.ScreenToWorld(Position); } }
         public static Vector2 Position
         {
             get
@@ -281,7 +333,7 @@ namespace Birds.src.utility
             {
                 return Mouse.GetState().RightButton == ButtonState.Pressed;
             }
-        }*/
+        }
         public int PreviousScrollValue { get; set; }
         private int scrollValue;
         public int ScrollValue
@@ -292,7 +344,7 @@ namespace Birds.src.utility
                 scrollValue = Mouse.GetState().ScrollWheelValue;
                 return scrollValue;
             }
-        }
-        
+        }*/
+
     }
 }
