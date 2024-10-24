@@ -123,7 +123,7 @@ namespace Birds.src.utility
             get
             {
                 TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
-                if (tc.IsConnected)
+                if (tc.IsConnected && !pinching)
                 {
                     TouchCollection touchCollection = TouchPanel.GetState();
                     foreach (TouchLocation tl in touchCollection)
