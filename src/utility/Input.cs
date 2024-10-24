@@ -79,7 +79,7 @@ namespace Birds.src.utility
                 TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
                 if (tc.IsConnected)
                 {
-                    if (TouchPanel.IsGestureAvailable && TouchPanel.ReadGesture().GestureType != GestureType.Pinch)
+                    if (!(TouchPanel.IsGestureAvailable && TouchPanel.ReadGesture().GestureType == GestureType.Pinch))
                     {
                         TouchCollection touchCollection = TouchPanel.GetState();
                         if (trackedTLID != -1) //remove last tracked touch location if its not active anymore
