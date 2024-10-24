@@ -25,7 +25,7 @@ namespace Birds.src.menu
         
         private bool wasPressed;
         Stopwatch timer = new Stopwatch();
-        private int doubleClickTreshold = 200;
+        private int doubleClickTreshold = 300;
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute]State previousState) : base(game, graphicsDevice, content, input)
         {
@@ -82,20 +82,20 @@ namespace Birds.src.menu
         }
         private void CheckDoubleClick()
         {
-            if (wasPressed && Input.IsReleased)
-            {
-                if (Player.BoundingCircle.Contains(Input.PositionGameCoords)){
-                    timer.Start();
-                }
-                    
-            }
-            else if (!wasPressed && Input.IsPressed)
+            if (!wasPressed && Input.IsPressed)
             {
                 if (timer.IsRunning )
                 {
                     if (timer.ElapsedMilliseconds < doubleClickTreshold && Player.BoundingCircle.Contains(Input.PositionGameCoords))
                         HandleDoubleClick();
                     timer.Reset();
+                }
+                else
+                {
+                    if (Player.BoundingCircle.Contains(Input.PositionGameCoords))
+                    {
+                        timer.Start();
+                    }
                 }
             }
             if (Input.IsPressed)
