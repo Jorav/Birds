@@ -23,7 +23,7 @@ namespace Birds.src.utility
             TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
             if (tc.IsConnected)
             {
-                TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete;
+                TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete | GestureType.FreeDrag | GestureType.DragComplete | GestureType.Hold;
                 if (TouchPanel.IsGestureAvailable)
                 {
                     GestureSample gesture = TouchPanel.ReadGesture();
