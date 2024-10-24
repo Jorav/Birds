@@ -29,7 +29,7 @@ namespace Birds.src.utility
                 Vector2? l2 = null;
                 foreach (TouchLocation tl in touchCollection)
                 {
-                    if (tl.State == TouchLocationState.Pressed)
+                    if (tl.State == TouchLocationState.Pressed || tl.State == TouchLocationState.Moved)
                     {
                         pressedLocations++;
                         if (l1 == null)
