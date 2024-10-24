@@ -43,53 +43,17 @@ namespace Birds.src.utility
                     float distance = Vector2.Distance((Vector2)l1, (Vector2)l2);
                     if (!pinching)
                     {
-                        pinchInitialDistance = distance;
+                        pinchPreviousDistance = distance;
                     }
-                    float scale = distance / pinchInitialDistance;
+                    float scale = distance / pinchPreviousDistance;
                     Camera.Zoom *= scale;
                     Camera.AutoAdjustZoom = false;
                     pinching = true;
-                    pinchInitialDistance = distance;
+                    pinchPreviousDistance = distance;
                 }
                 else
                     pinching = false;
             }
-
-            /*
-            TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete | GestureType.FreeDrag | GestureType.DragComplete | GestureType.Hold;
-            while (TouchPanel.IsGestureAvailable)
-            {
-                GestureSample gesture = TouchPanel.ReadGesture();
-                if (gesture.GestureType == GestureType.Pinch)
-                {
-                    // current positions
-                    Vector2 a = gesture.Position;
-                    Vector2 b = gesture.Position2;
-                    float dist = Vector2.Distance(a, b);
-
-                    // prior positions
-                    Vector2 aOld = gesture.Position - gesture.Delta;
-                    Vector2 bOld = gesture.Position2 - gesture.Delta2;
-                    float distOld = Vector2.Distance(aOld, bOld);
-
-                    if (!pinching)
-                    {
-                        // start of pinch, record original distance
-                        pinching = true;
-                        pinchInitialDistance = distOld;
-                    }
-
-                    // work out zoom amount based on pinch distance...
-                    float scale = dist/distOld;
-                    Camera.Zoom *= scale;
-                    Camera.AutoAdjustZoom = false;
-                }
-                else if (gesture.GestureType == GestureType.PinchComplete)
-                {
-                    pinching = false;
-                }
-            }
-        }*/
             else
             {
                 float scrollValue = Mouse.GetState().ScrollWheelValue;
@@ -103,8 +67,7 @@ namespace Birds.src.utility
         }
         private static float previousScrollValue;
         private static bool pinching = false;
-        private static float pinchInitialDistance;
-        float previousZoomChange = 0;
+        private static float pinchPreviousDistance;
         public static Vector2 PositionGameCoords { get { return Camera.ScreenToWorld(Position); } }
         public static Vector2 Position
         {
@@ -135,12 +98,13 @@ namespace Birds.src.utility
                             }
                         }
                     }
-                    if (trackedTLID != -1) //return to the tracked location
+                    if (!pinching && trackedTLID != -1) //return to the tracked location
                     {
                         foreach (TouchLocation tl in touchCollection)
                         {
                             if (tl.Id == trackedTLID && ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved)))
                             {
+                                previousPosition = tl.Position;
                                 return tl.Position;
                             }
                         }
@@ -150,9 +114,10 @@ namespace Birds.src.utility
                 {
                     return Mouse.GetState().Position.ToVector2();
                 }
-                return Vector2.Zero;
+                return previousPosition;
             }
         }
+        private static Vector2 previousPosition = Vector2.Zero;
         public static bool IsPressed
         {
             get

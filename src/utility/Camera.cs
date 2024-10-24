@@ -14,7 +14,16 @@ namespace Birds.src.utility
         public Vector2 Position { get; set; }
         public Vector2 PreviousPosition { get; set; }
         public float Rotation { get; set; }
-        public float Zoom { get; set; }
+        private float zoom;
+        public float Zoom { get { return zoom; } set
+            {
+                if (value > maxZoom)
+                    value = maxZoom;
+                else if (value < minZoom)
+                    value = minZoom;
+                zoom = value;
+            }
+        }
         public float Width { get { return Game1.ScreenWidth / Zoom; } }
         public float Height { get { return Game1.ScreenHeight / Zoom; } }
         public bool AutoAdjustZoom { get; set; }
@@ -22,6 +31,8 @@ namespace Birds.src.utility
         //        public float GameZoom { get { if (Controller != null) return  Game1.ScreenWidth / 3 / Controller.Radius; else return 1; } }
         public Controller Controller { get; set; }
         private float zoomSpeed;
+        private float maxZoom = 3;
+        private float minZoom = 0.5f;
 
         public Camera([OptionalAttribute] Controller controller, float zoomSpeed = 0.01f)
         {
