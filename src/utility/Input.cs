@@ -23,6 +23,7 @@ namespace Birds.src.utility
             TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
             if (tc.IsConnected)
             {
+                TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete;
                 if (TouchPanel.IsGestureAvailable)
                 {
                     GestureSample gesture = TouchPanel.ReadGesture();
@@ -48,7 +49,6 @@ namespace Birds.src.utility
                         // work out zoom amount based on pinch distance...
                         float scale = dist/distOld;
                         Camera.Zoom *= scale;
-                        throw new Exception();
                         Camera.AutoAdjustZoom = false;
                     }
                     else if (gesture.GestureType == GestureType.PinchComplete)
