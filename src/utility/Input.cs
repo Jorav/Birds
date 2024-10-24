@@ -24,7 +24,7 @@ namespace Birds.src.utility
             if (tc.IsConnected)
             {
                 TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete | GestureType.FreeDrag | GestureType.DragComplete | GestureType.Hold;
-                if (TouchPanel.IsGestureAvailable)
+                while (TouchPanel.IsGestureAvailable)
                 {
                     GestureSample gesture = TouchPanel.ReadGesture();
                     if (gesture.GestureType == GestureType.Pinch)
