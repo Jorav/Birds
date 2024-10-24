@@ -48,6 +48,7 @@ namespace Birds.src.utility
                         // work out zoom amount based on pinch distance...
                         float scale = dist/distOld;
                         Camera.Zoom *= scale;
+                        throw new Exception();
                         Camera.AutoAdjustZoom = false;
                     }
                     else if (gesture.GestureType == GestureType.PinchComplete)
