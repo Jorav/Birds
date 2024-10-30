@@ -127,7 +127,7 @@ namespace Birds.src.utility
                     {
                         if (tl.Id == trackedTLID && ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved)))
                         {
-                            previousPosition = tl.Position;
+                            previousPosition = Position;
                             Position = tl.Position;
                         }
                     }
