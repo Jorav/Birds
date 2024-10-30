@@ -79,10 +79,10 @@ namespace Birds.src.menu
                     input.Camera = p.Camera;
             }*/
             RunGame(gameTime);
+            Input.Update(gameTime);
             HandleScroll();
             CheckClickOnPlayer();
             CheckDoubleClick();
-            Input.Update(gameTime);
             wasPressed = Input.IsPressed;
         }
 
