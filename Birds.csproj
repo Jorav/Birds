@@ -45,9 +45,14 @@
     <Compile Include="src\controllers\Controller.cs" />
     <Compile Include="src\controllers\GameController.cs" />
     <Compile Include="src\controllers\Player.cs" />
+    <Compile Include="src\controllers\steering\ChaserSteering.cs" />
+    <Compile Include="src\controllers\steering\PlayerSteering.cs" />
+    <Compile Include="src\controllers\steering\Steering.cs" />
+    <Compile Include="src\entities\IEntity.cs" />
+    <Compile Include="src\entities\WorldEntity.cs" />
     <Compile Include="src\Game1.cs" />
     <Compile Include="src\ICollidable.cs" />
-    <Compile Include="src\IEntity.cs" />
+    <Compile Include="src\menu\BuildState.cs" />
     <Compile Include="src\menu\controls\Button.cs" />
     <Compile Include="src\menu\controls\ButtonContainer.cs" />
     <Compile Include="src\menu\controls\DropDownButton.cs" />
@@ -65,10 +70,10 @@
     <Compile Include="src\utility\Camera.cs" />
     <Compile Include="src\utility\factories\ControllerFactory.cs" />
     <Compile Include="src\utility\factories\EntityFactory.cs" />
+    <Compile Include="src\utility\factories\SpriteFactory.cs" />
     <Compile Include="src\utility\IDs.cs" />
     <Compile Include="src\utility\Input.cs" />
     <Compile Include="src\visual\FadingText.cs" />
-    <Compile Include="src\WorldEntity.cs" />
     <KniContentReference Include="Content\BirdsContent.mgcb" />
   </ItemGroup>
 

@@ -68,16 +68,7 @@ namespace Birds.src.bounding_areas
 
         public OrientedBoundingBox(Vector2 position, float rotation, int width, int height)
         {
-            UL = new Vector2(position.X, position.Y);
-            DL = new Vector2(position.X, position.Y + height);
-            DR = new Vector2(position.X + width, position.Y + height);
-            UR = new Vector2(position.X + width, position.Y);
-            this.position = position;
-            origin = new Vector2(Width / 2, Height / 2);
-            Rotation = rotation;
-            Radius = (float)Math.Sqrt(Math.Pow(Width / 2, 2) + Math.Pow(Height / 2, 2));
-            MaxXY = ((float)Math.Max(Math.Max(UL.X, UR.X), Math.Max(DL.X, DR.X)),(float)Math.Max(Math.Max(UL.Y, UR.Y), Math.Max(DL.Y, DR.Y)));
-            MinXY = ((float)Math.Min(Math.Min(UL.X, UR.X), Math.Min(DL.X, DR.X)),(float)Math.Min(Math.Min(UL.Y, UR.Y), Math.Min(DL.Y, DR.Y)));
+            SetBox(position,rotation,width,height);
         }
         public bool CollidesWith(OrientedBoundingBox r)
         {
@@ -134,6 +125,20 @@ namespace Birds.src.bounding_areas
                 return CollidesWith(OBB);
             else
                 throw new NotImplementedException();
+        }
+
+        public void SetBox(Vector2 upperLeftCorner, float rotation, int width, int height)
+        {
+            UL = new Vector2(position.X, position.Y);
+            DL = new Vector2(position.X, position.Y + height);
+            DR = new Vector2(position.X + width, position.Y + height);
+            UR = new Vector2(position.X + width, position.Y);
+            this.position = upperLeftCorner;
+            origin = new Vector2(Width / 2, Height / 2);
+            Rotation = rotation;
+            Radius = (float)Math.Sqrt(Math.Pow(Width / 2, 2) + Math.Pow(Height / 2, 2));
+            MaxXY = ((float)Math.Max(Math.Max(UL.X, UR.X), Math.Max(DL.X, DR.X)),(float)Math.Max(Math.Max(UL.Y, UR.Y), Math.Max(DL.Y, DR.Y)));
+            MinXY = ((float)Math.Min(Math.Min(UL.X, UR.X), Math.Min(DL.X, DR.X)),(float)Math.Min(Math.Min(UL.Y, UR.Y), Math.Min(DL.Y, DR.Y)));
         }
     }
 }

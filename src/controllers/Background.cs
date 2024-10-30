@@ -5,23 +5,24 @@ using Birds.src.controllers;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Birds.src.utility;
+using Birds.src.entities;
 
 namespace Birds.src.controllers
 {
     public class Background : Controller
     {
-        protected float relativeSpeed; //1->0
+        protected float relativeSpeed;
         protected Camera camera;
         protected Vector2 movement;
-        float previosZoom;
-        public Background(List<IEntity> entities, float relativeSpeed, Camera camera, [OptionalAttribute] Vector2 movement) : base(entities)
+        float previousZoom;
+        public Background(List<IEntity> entities, Camera camera, [OptionalAttribute] Vector2 movement, float relativeSpeed = 1) : base(entities)
         {
             this.relativeSpeed = relativeSpeed;
             this.camera = camera;
             if (movement == null)
                 movement = Vector2.Zero;
             this.movement = movement;
-            previosZoom = camera.Zoom;
+            previousZoom = camera.Zoom;
         }
         
         public override void Update(GameTime gameTime) //OBS: assumes background sprites not rotated
@@ -32,14 +33,14 @@ namespace Birds.src.controllers
                 Vector2 positionChange = cameraChange* (1 - relativeSpeed) + movement*relativeSpeed;
                 //e.Accelerate(movement * relativeSpeed);
                 e.Position += positionChange;
-                e.Scale += (camera.Zoom-previosZoom)*relativeSpeed; 
+                e.Scale += (camera.Zoom-previousZoom)*relativeSpeed; 
                 
                 //e.Scale = 1.5f-camera.Zoom*(relativeSpeed);
                 e.TotalExteriorForce *= (1-relativeSpeed);
                 e.Update(gameTime);
                 UpdatePosition();
                 UpdateRadius();
-            }previosZoom = camera.Zoom;
+            }previousZoom = camera.Zoom;
             /*
             foreach (WorldEntity e in Entities)
             {

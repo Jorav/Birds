@@ -7,13 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Birds.src.controllers
 {
   public class GameController{
-    protected List<Controller> controllers;
+    public static List<Controller> controllers;
     private AABBTree collisionManager = new();
-
-    public GameController(List<Controller> controllers){
-      this.controllers = controllers;
-      collisionManager.UpdateTree(controllers.Cast<ICollidable>().ToList());
-    }
 
     public GameController(){
       controllers = new();

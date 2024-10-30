@@ -4,10 +4,9 @@ using System.Text;
 
 namespace Birds.src.utility
 {
-    public enum IDs
+    public enum ID_ENTITY
     {
-        #region Entities
-        ENTITY_DEFAULT,
+        DEFAULT,
         SHOOTER,
         PROJECTILE,
         COMPOSITE,
@@ -18,35 +17,34 @@ namespace Birds.src.utility
         TRIANGULAR_90ANGLE_COMPOSITE,
         EMPTY_LINK,
         ENGINE,
-        #endregion
-
-        #region Utilities
         CLOUD,
         SUN,
-        ENTITY_BUTTON,
-        #endregion
-        
-        #region Controllers
+    }
+    public enum ID_CONTROLLER
+    {
         PLAYER,
         CONTROLLER_DEFAULT,
         CHASER_AI,
         CIRCULAR_AI,
         INDECISIVE_AI,
         RANDOM_AI,
-        BACKGROUND,
-        #endregion
+        BACKGROUND_SUN,
+        FOREGROUND_CLOUD,
+    }
+    public enum ID_POSITION
+    {
+        POSITION_MIDDLE,
+        POSITION_TOP_RIGHT,
+        POSITION_NOT_BOUND,
+    }
 
-        #region TEAMS
+    public enum ID_OTHER
+    {
+        UTILITY_ENTITY_BUTTON,
+
         TEAM_NEUTRAL_HOSTILE,
         TEAM_NEUTRAL_FRIENDLY,
         TEAM_PLAYER,
         TEAM_AI,
-        #endregion
-
-        #region Positions
-        MIDDLE,
-        TOP_RIGHT,
-        NOT_BOUND,
-        #endregion
     }
 }

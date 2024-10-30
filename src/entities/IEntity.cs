@@ -4,12 +4,12 @@ using Birds.src.utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Birds.src
+namespace Birds.src.entities
 {
     public interface IEntity : ICollidable
     {
         public new Vector2 Position {get; set;}
-        public IDs Team {get; set;}
+        public ID_OTHER Team {get; set;}
         public Controller Manager {get; set;}
         public Color Color {get;set;}
         public Vector2 Velocity { get; }

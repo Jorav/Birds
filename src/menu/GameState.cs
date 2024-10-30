@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Diagnostics;
 using Birds.src.factories;
+using Birds.src.entities;
 
 namespace Birds.src.menu
 {
@@ -20,23 +21,23 @@ namespace Birds.src.menu
         protected List<Background> foregrounds;
         protected State previousState;
         public List<IEntity> newEntities;
-        public Player Player { get; set; }
+        public static Controller Player { get; set; }
         public Camera Camera { get; set; }
-
+        
         private bool wasPressed;
         Stopwatch timer = new Stopwatch();
         private int doubleClickTreshold = 400;
 
-        public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute] State previousState) : base(game, graphicsDevice, content, input)
+        public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute]State previousState) : base(game, graphicsDevice, content, input)
         {
             controller = new GameController();
             backgrounds = new List<Background>();
             foregrounds = new List<Background>();
             this.previousState = previousState;
             newEntities = new List<IEntity>();
-            if (Player == null)
+            if(Player == null)
             {
-                Player = new Player(input);
+                Player = ControllerFactory.Create(Vector2.Zero, ID_CONTROLLER.PLAYER);
                 controller.Add(Player);
             }
             Camera = new Camera(Player);
@@ -119,7 +120,7 @@ namespace Birds.src.menu
         private void HandleDoubleClick()
         {
             //game.ChangeState(new BuildState(game, graphicsDevice, content, this, input, Player));
-            Player.AddControllable(EntityFactory.Create(Player.Position, IDs.ENTITY_DEFAULT));
+            Player.AddControllable(EntityFactory.Create(Player.Position, ID_ENTITY.DEFAULT));
         }
 
         public void RunGame(GameTime gameTime)

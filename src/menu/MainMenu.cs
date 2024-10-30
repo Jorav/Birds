@@ -48,7 +48,7 @@ namespace Birds.src.menu
             };
             quitButton.Click += QuitButton_Click;
 
-            ButtonContainer container = new ButtonContainer(IDs.MIDDLE, new List<Button>  { newGameButton });
+            ButtonContainer container = new ButtonContainer(ID_POSITION.POSITION_MIDDLE, new List<Button>  { newGameButton });
             components = new List<IComponent>()
             {
                 container,

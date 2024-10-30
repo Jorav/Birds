@@ -1,21 +1,22 @@
 ﻿using Birds.src.bounding_areas;
 using Birds.src.controllers;
+using Birds.src.factories;
 using Birds.src.utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace Birds.src
+namespace Birds.src.entities
 {
     public class WorldEntity : Movable, IEntity
     {
         #region Properties
         protected Sprite sprite = null;
         public bool IsVisible { get { return sprite.isVisible; } set { sprite.isVisible = value; } }
-        public OrientedBoundingBox OBB;
+        private OrientedBoundingBox OBB;
         public IBoundingArea BoundingArea {get{return OBB;}}
-        public BoundingCircle BoundingCircle { get; set; }
+        public BoundingCircle BoundingCircle { get; private set; }
         public override Vector2 Position
         {
             get { return position; }
@@ -56,7 +57,7 @@ namespace Birds.src
         public bool IsCollidable { get; set; }
         public Vector2 MassCenter { get { return position; } }
 
-        public IDs Team { get;set; }
+        public ID_OTHER Team { get;set; }
         public Controller Manager { get;set; }
         public Color Color { get;set;}
         public float Scale { get { return sprite.Scale; } set { sprite.Scale = value; /*BoundingArea.Scale = value; oldCollisionDetector.Scale = value;*/ foreach (Link l in Links) l.Scale = value;/*add collisionDetector scale in the future*/ } }
@@ -65,11 +66,11 @@ namespace Birds.src
 
         public static float REPULSIONDISTANCE = 100;
         #endregion
-        public WorldEntity(Texture2D texture, Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, bool isVisible = true, bool isCollidable = true) : base(position, rotation, mass, thrust, friction)
+        public WorldEntity(ID_ENTITY id, Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, bool isVisible = true, bool isCollidable = true, float scale = 1) : base(position, rotation, mass, thrust, friction)
         {
-            this.sprite = new Sprite(texture);
-            OBB = new OrientedBoundingBox(position, rotation, sprite.Width, sprite.Height);
-            BoundingCircle = new BoundingCircle(position, OBB.Radius);
+            this.sprite = SpriteFactory.CreateSprite(position, id, scale);//new Sprite(texture);
+            OBB = BoundingAreaFactory.CreateOBB(position, rotation, sprite.Width, sprite.Height);
+            BoundingCircle = BoundingAreaFactory.CreateCircle(position, OBB.Radius);
             Position = position;
             Rotation = rotation;
             IsVisible = isVisible;

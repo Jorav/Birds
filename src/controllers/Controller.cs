@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Birds.src.bounding_areas;
 using Birds.src.BVH;
+using Birds.src.controllers.steering;
+using Birds.src.entities;
 using Birds.src.utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,11 +20,11 @@ namespace Birds.src.controllers
     public BoundingCircle BoundingCircle { get; set; }
     private AABBTree collisionManager;
     protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
-    private IDs team;
-    public IDs Team { get { return team; } set { team = value; foreach (IEntity c in Entities) c.Team = value; } }
+    private ID_OTHER team;
+    public ID_OTHER Team { get { return team; } set { team = value; foreach (IEntity c in Entities) c.Team = value; } }
     public float Radius { get { return radius; } protected set { radius = value; BoundingCircle.Radius = value; } }
     protected float radius;
-    public List<Controller> SeperatedEntities;
+    //public List<Controller> SeperatedEntities;
     protected Vector2 position;
     public virtual Vector2 Position
     {
@@ -50,19 +52,20 @@ namespace Birds.src.controllers
     public Color Color { set { foreach (IEntity c in Entities) c.Color = value; color = value; } get { return color; } }
     public IBoundingArea BoundingArea { get { return BoundingCircle; } }
     public bool IsCollidable { get; set; }
+    public Steering Steering { get; set; }
 
     #endregion
     #region Constructors
-    public Controller(List<IEntity> controllables, IDs team = IDs.TEAM_AI)
+    public Controller(List<IEntity> controllables, ID_OTHER team = ID_OTHER.TEAM_AI)
     {
       BoundingCircle = new BoundingCircle(Position, Radius);
       collisionManager = new AABBTree();
       SetEntities(controllables);
       Team = team;
-      SeperatedEntities = new List<Controller>();
+      //SeperatedEntities = new List<Controller>();
       Color = Color.White;
     }
-    public Controller([OptionalAttribute] Vector2 position, IDs team = IDs.TEAM_AI)
+    public Controller([OptionalAttribute] Vector2 position, ID_OTHER team = ID_OTHER.TEAM_AI)
     {
       BoundingCircle = new BoundingCircle(Position, Radius);
       collisionManager = new AABBTree();
@@ -71,7 +74,7 @@ namespace Birds.src.controllers
         position = Vector2.Zero;
       //SetControllables(new List<IEntity>() { new WorldEntity(position) });
       Team = team;
-      SeperatedEntities = new List<Controller>();
+      //SeperatedEntities = new List<Controller>();
       Color = Color.White;
     }
 
@@ -79,6 +82,7 @@ namespace Birds.src.controllers
     #region Methods
     public virtual void Update(GameTime gameTime)
     {
+      Steer(gameTime);
       UpdateControllable(gameTime);
       //RemoveEmptyControllers();
       //AddSeperatedEntities();
@@ -88,6 +92,15 @@ namespace Birds.src.controllers
       collisionManager.Update(gameTime);
       //InternalCollission();
     }
+
+    private void Steer(GameTime gameTime)
+    {
+      if (Steering != null)
+      {
+        Steering.Update(gameTime);
+      }
+    }
+
     public virtual void SetEntities(List<IEntity> newEntities)
     {
       if (newEntities != null)

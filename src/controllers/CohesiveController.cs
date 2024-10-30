@@ -1,4 +1,5 @@
 using Birds.src;
+using Birds.src.entities;
 using Birds.src.utility;
 using Microsoft.Xna.Framework;
 using System;
@@ -13,8 +14,8 @@ namespace Birds.src.controllers
     protected bool integrateSeperatedEntities = false;
     public static float REPULSIONDISTANCE = 100;
 
-    public CohesiveController(List<IEntity> controllables, IDs team = IDs.TEAM_AI) : base(controllables, team) { }
-    public CohesiveController([OptionalAttribute] Vector2 position, IDs team = IDs.TEAM_AI) : base(position, team) { }
+    public CohesiveController(List<IEntity> controllables, ID_OTHER team = ID_OTHER.TEAM_AI) : base(controllables, team) { }
+    public CohesiveController([OptionalAttribute] Vector2 position, ID_OTHER team = ID_OTHER.TEAM_AI) : base(position, team) { }
     public override void Update(GameTime gameTime)
     {
       base.Update(gameTime);

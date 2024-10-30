@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Birds.src.utility;
 using System;
 using System.Collections.Generic;
+using Birds.src.entities;
+using Birds.src.menu;
 
 namespace Birds.src.factories
 {
@@ -22,12 +24,14 @@ namespace Birds.src.factories
         public static Texture2D triangular90AngleHull;
         public static Texture2D engine;
 
-        public static WorldEntity Create(Vector2 position, IDs id, float scale = 1)
+
+        public static Stack<WorldEntity> availableEntities = new();
+        public static WorldEntity Create(Vector2 position, ID_ENTITY id, float scale = 1)
         {
             Vector2 defaultPosition = Vector2.Zero;
             switch (id)
             {
-                case IDs.ENTITY_DEFAULT: return new WorldEntity(rectangularHull, position){Scale = scale};/*
+                case ID_ENTITY.DEFAULT: return new WorldEntity(ID_ENTITY.DEFAULT, position) { Scale = scale };/*
                 case IDs.EMPTY_LINK: return new RectangularComposite(new Sprite(emptyLink), position);
                 case IDs.COMPOSITE: return new RectangularComposite(new Sprite(rectangularHull), position) { Mass = 2 };
                 case IDs.CIRCULAR_COMPOSITE: return new CircularComposite(new Sprite(circularHull), position) { Mass = 2, Scale = 2 };
@@ -43,33 +47,46 @@ namespace Birds.src.factories
                 case IDs.ENGINE: return new WorldEntity(new Sprite(engine), position) {Mass = 0.5f, Thrust = 2f };
                 //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);*/
                 #region background
-                case IDs.CLOUD: return new WorldEntity(cloud, position, isCollidable: false){Scale = scale};
-                case IDs.SUN: return new WorldEntity(sun, position, isCollidable:false){Scale = scale};
+                case ID_ENTITY.CLOUD: return new WorldEntity(ID_ENTITY.CLOUD, position, isCollidable: false) { Scale = scale };
+                case ID_ENTITY.SUN: return new WorldEntity(ID_ENTITY.SUN, position, isCollidable: false) { Scale = scale };
                 #endregion
 
                 default:
                     throw new NotImplementedException();
             }
         }
-            
-        public static List<IEntity> CreateEntities(Vector2 position, int numberOfEntities, IDs id)
+
+        public static List<IEntity> CreateEntities(Vector2 position, int numberOfEntities, ID_ENTITY id, bool isBackground = false, float scale = 1)
         {
             List<IEntity> returnedList = new List<IEntity>();
             if (numberOfEntities == 1)
-                returnedList.Add(EntityFactory.Create(position, id));
+                returnedList.Add(EntityFactory.Create(position, id, scale: scale));
             if (numberOfEntities > 1)
             {
                 Random rnd = new Random();
-                for (int i = 0; i < numberOfEntities; i++)
+                if (!isBackground)
                 {
-                    float rRadius = (float)(rnd.NextDouble() * 5 * numberOfEntities);
-                    float rAngle = (float)(rnd.NextDouble() * 2 * Math.PI);
-                    returnedList.Add(EntityFactory.Create(new Vector2((float)Math.Sin(rAngle), (float)Math.Cos(rAngle)) * rRadius+position, id));
+                    for (int i = 0; i < numberOfEntities; i++)
+                    {
+                        float rRadius = (float)(rnd.NextDouble() * 5 * numberOfEntities);
+                        float rAngle = (float)(rnd.NextDouble() * 2 * Math.PI);
+                        returnedList.Add(EntityFactory.Create(new Vector2((float)Math.Sin(rAngle), (float)Math.Cos(rAngle)) * rRadius + position, id, scale: scale));
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < numberOfEntities; i++)
+                    {
+                        float x = GameState.Player.Position.X+(float)((rnd.NextDouble() * (Game1.ScreenWidth-32*scale*2)-Game1.ScreenWidth/2)+32*scale); //TODO: make this dependent on standardised texture size
+                        float y = GameState.Player.Position.X+(float)((rnd.NextDouble() * (Game1.ScreenHeight-32*scale*2)-Game1.ScreenHeight/2)+32*scale); //TODO: make this dependent on standardised texture size
+                        returnedList.Add(EntityFactory.Create(new Vector2(x, y), id, scale: scale));
+                    }
+
                 }
             }
             return returnedList;
         }
-        
+
         /**
         public static void LoadTextures(Texture2D hull, Texture2D gun, Texture2D projectile, Texture2D cloud) //TODO - add support for multiple skins
         {

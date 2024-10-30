@@ -8,6 +8,7 @@ namespace Birds.src.bounding_areas
     {
         public static Stack<BoundingCircle> circles = new();
         public static Stack<AxisAlignedBoundingBox> AABBs = new();
+        public static Stack<OrientedBoundingBox> OBBs = new();
         
         public static BoundingCircle CreateCircle(Vector2 position, float radius){
             if(circles.Count == 0)
@@ -29,6 +30,18 @@ namespace Birds.src.bounding_areas
                 AABB.SetBox(upperLeftCorner,width,height);
                 return AABB;
             }
+        }
+
+        public static OrientedBoundingBox CreateOBB(Vector2 upperLeftCorner, float rotation, int width, int height){
+            if(OBBs.Count == 0)
+                return new OrientedBoundingBox(upperLeftCorner, rotation, width, height);
+            else
+            {
+                OrientedBoundingBox OBB = OBBs.Pop();
+                OBB.SetBox(upperLeftCorner,rotation,width,height);
+                return OBB;
+            }
+
         }
     }
 }

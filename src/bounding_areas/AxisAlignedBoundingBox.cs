@@ -61,7 +61,7 @@ namespace Birds.src.bounding_areas
             DL = new Vector2(upperLeftCorner.X, upperLeftCorner.Y + height);
             DR = new Vector2(upperLeftCorner.X + width, upperLeftCorner.Y + height);
             UR = new Vector2(upperLeftCorner.X + width, upperLeftCorner.Y);
-            this.position = upperLeftCorner + new Vector2(width/2, height/2);
+            this.position = upperLeftCorner;// + new Vector2(width/2, height/2);
             Radius = (float)Math.Sqrt(Math.Pow(Width / 2, 2) + Math.Pow(Height / 2, 2));
             UpdateMaxAndMin();
         }
@@ -138,6 +138,8 @@ namespace Birds.src.bounding_areas
 
         public bool CollidesWith(IBoundingArea boundingArea)
         {
+            if(boundingArea is AxisAlignedBoundingBox aabb)
+                return CollidesWith(aabb);
             throw new NotImplementedException();
         }
     }

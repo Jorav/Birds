@@ -12,7 +12,7 @@ namespace Birds.src.menu.controls
     public class ButtonContainer : IComponent
     {
         List<Button> buttons;
-        private IDs desiredPosition;
+        private ID_POSITION desiredPosition;
         private Vector2 position;
         private float bufferDistance = 10f;
         public Vector2 Position
@@ -26,14 +26,14 @@ namespace Birds.src.menu.controls
                 position = value;
             }
         }
-        public ButtonContainer(IDs desiredPosition, List<Button> buttons)
+        public ButtonContainer(ID_POSITION desiredPosition, List<Button> buttons)
         {
             this.buttons = buttons;
             this.desiredPosition = desiredPosition;
             SetButtonsToPosition(desiredPosition);
         }
 
-        private void SetButtonsToPosition(IDs position)
+        private void SetButtonsToPosition(ID_POSITION position)
         {
             this.desiredPosition = position;
             float totalHeight = 0;
@@ -46,7 +46,7 @@ namespace Birds.src.menu.controls
             float currentY = 0f;
             switch (position)
             {
-                case IDs.MIDDLE:
+                case ID_POSITION.POSITION_MIDDLE:
                     currentY = Game1.ScreenHeight / 2 - totalHeight / 2;
                     foreach (Button b in buttons)
                     {
@@ -54,7 +54,7 @@ namespace Birds.src.menu.controls
                         currentY += b.Dimensions.Y + bufferDistance;
                     }
                     break;
-                case IDs.TOP_RIGHT:
+                case ID_POSITION.POSITION_TOP_RIGHT:
                     currentY = bufferDistance;
                     foreach (Button b in buttons)
                     {

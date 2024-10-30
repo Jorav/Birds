@@ -18,6 +18,128 @@ namespace Birds.src.utility
         public Keys Build { get; set; }
         public Keys Enter { get; set; }
         //public static Vector2 PositionGameCoords { get { return (Position - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Camera.Zoom + Camera.Position; } }
+        public static void Update(GameTime gameTime)
+        {
+            UpdatePosition();
+            UpdateIsPressed();
+            UpdateIsReleased();
+        }
+
+        private static void UpdateIsReleased()
+        {
+            TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
+            if (tc.IsConnected)
+            {
+                TouchCollection touchCollection = TouchPanel.GetState();
+                if (trackedTLID == -1)
+                {
+                    bool anyPressed = false;
+                    foreach (TouchLocation tl in touchCollection)
+                    {
+                        if (tl.State == TouchLocationState.Pressed)
+                        {
+                            anyPressed = true;
+                        }
+                    }
+                    IsReleased = !anyPressed;
+
+                }
+                else
+                {
+                    foreach (TouchLocation tl in touchCollection)
+                    {
+
+                        if (tl.Id == trackedTLID)
+                        {
+                            if (tl.State == TouchLocationState.Released)
+                            {
+                                trackedTLID = -1;
+                                IsReleased = true;
+                            }
+
+                        }
+                    }
+                }
+                IsReleased = false;
+            }
+            else
+            {
+                IsReleased = Mouse.GetState().LeftButton == ButtonState.Released;
+            }
+        }
+
+        private static void UpdateIsPressed()
+        {
+            TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
+            if (tc.IsConnected && !pinching)
+            {
+                TouchCollection touchCollection = TouchPanel.GetState();
+                foreach (TouchLocation tl in touchCollection)
+                {
+                    if (tl.Id == trackedTLID)
+                    {
+                        if (tl.State == TouchLocationState.Released)
+                            trackedTLID = -1;
+                    }
+                    if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
+                    {
+                        IsPressed = true;
+                    }
+                }
+                IsPressed = false;
+            }
+            else
+            {
+                IsPressed = Mouse.GetState().LeftButton == ButtonState.Pressed;
+            }
+        }
+
+        private static void UpdatePosition()
+        {
+            TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
+            if (tc.IsConnected)
+            {
+                TouchCollection touchCollection = TouchPanel.GetState();
+                if (trackedTLID != -1) //remove last tracked touch location if its not active anymore
+                {
+                    foreach (TouchLocation tl in touchCollection)
+                    {
+                        if (tl.Id == trackedTLID)
+                        {
+                            if (tl.State == TouchLocationState.Released)
+                                trackedTLID = -1;
+                        }
+                    }
+                }
+                if (trackedTLID == -1)//track new location if untracked
+                {
+                    foreach (TouchLocation tl in touchCollection)
+                    {
+                        if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
+                        {
+                            trackedTLID = tl.Id;
+                        }
+                    }
+                }
+                if (!pinching && trackedTLID != -1) //return to the tracked location
+                {
+                    foreach (TouchLocation tl in touchCollection)
+                    {
+                        if (tl.Id == trackedTLID && ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved)))
+                        {
+                            previousPosition = tl.Position;
+                            Position = tl.Position;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                previousPosition = Position;
+                Position = Mouse.GetState().Position.ToVector2();
+            }
+        }
+
         public static void HandleZoom()
         {
             TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
@@ -71,126 +193,16 @@ namespace Birds.src.utility
         public static Vector2 PositionGameCoords { get { return Camera.ScreenToWorld(Position); } }
         public static Vector2 Position
         {
-            get
-            {
-                TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
-                if (tc.IsConnected)
-                {
-                    TouchCollection touchCollection = TouchPanel.GetState();
-                    if (trackedTLID != -1) //remove last tracked touch location if its not active anymore
-                    {
-                        foreach (TouchLocation tl in touchCollection)
-                        {
-                            if (tl.Id == trackedTLID)
-                            {
-                                if (tl.State == TouchLocationState.Released)
-                                    trackedTLID = -1;
-                            }
-                        }
-                    }
-                    if (trackedTLID == -1)//track new location if untracked
-                    {
-                        foreach (TouchLocation tl in touchCollection)
-                        {
-                            if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
-                            {
-                                trackedTLID = tl.Id;
-                            }
-                        }
-                    }
-                    if (!pinching && trackedTLID != -1) //return to the tracked location
-                    {
-                        foreach (TouchLocation tl in touchCollection)
-                        {
-                            if (tl.Id == trackedTLID && ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved)))
-                            {
-                                previousPosition = tl.Position;
-                                return tl.Position;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    return Mouse.GetState().Position.ToVector2();
-                }
-                return previousPosition;
-            }
-        }
+            set; get;
+        } = previousPosition;
         private static Vector2 previousPosition = Vector2.Zero;
         public static bool IsPressed
         {
-            get
-            {
-                TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
-                if (tc.IsConnected && !pinching)
-                {
-                    TouchCollection touchCollection = TouchPanel.GetState();
-                    foreach (TouchLocation tl in touchCollection)
-                    {
-                        if (tl.Id == trackedTLID)
-                        {
-                            if (tl.State == TouchLocationState.Released)
-                                trackedTLID = -1;
-                        }
-                        if ((tl.State == TouchLocationState.Pressed) || (tl.State == TouchLocationState.Moved))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-                else
-                {
-                    return Mouse.GetState().LeftButton == ButtonState.Pressed;
-                }
-            }
+            get; set;
         }
         public static bool IsReleased
         {
-            get
-            {
-                TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
-                if (tc.IsConnected)
-                {
-                    TouchCollection touchCollection = TouchPanel.GetState();
-                    if (trackedTLID == -1)
-                    {
-                        bool anyPressed = false;
-                        foreach (TouchLocation tl in touchCollection)
-                        {
-                            if (tl.State == TouchLocationState.Pressed)
-                            {
-                                anyPressed = true;
-                            }
-                        }
-                        return !anyPressed;
-
-                    }
-                    else
-                    {
-                        foreach (TouchLocation tl in touchCollection)
-                        {
-
-                            if (tl.Id == trackedTLID)
-                            {
-                                if (tl.State == TouchLocationState.Released)
-                                {
-                                    trackedTLID = -1;
-                                    return true;
-                                }
-
-                            }
-                        }
-                    }
-                    return false;
-                }
-                else
-                {
-                    return Mouse.GetState().LeftButton == ButtonState.Released;
-                }
-
-            }
+            get; set;
         }
         //public Vector2 MousePositionGameCoords { get { return (Mouse.GetState().Position.ToVector2() - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2) )/Camera.Zoom + Camera.Position; } }
         //public Vector2 TouchPadPositionGameCoords { get { return (TouchPadPosition - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2)) / Camera.Zoom + Camera.Position; } }

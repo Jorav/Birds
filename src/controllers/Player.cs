@@ -1,4 +1,5 @@
 using Birds.src;
+using Birds.src.entities;
 using Birds.src.utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -18,12 +19,12 @@ namespace Birds.src.controllers
         private bool wasPressed;
         private bool hasStartedMoving;
 
-        public Player(List<IEntity> collidables, Input input) : base(collidables, IDs.TEAM_PLAYER)
+        public Player(List<IEntity> collidables, Input input) : base(collidables, ID_OTHER.TEAM_PLAYER)
         {
             this.Input = input;
             integrateSeperatedEntities = true;
         }
-        public Player(Input input, [OptionalAttribute] Vector2 position) : base(position, IDs.TEAM_PLAYER)
+        public Player(Input input, [OptionalAttribute] Vector2 position) : base(position, ID_OTHER.TEAM_PLAYER)
         {
             this.Input = input;
             integrateSeperatedEntities = true;

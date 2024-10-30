@@ -6,6 +6,7 @@ namespace Birds.src.bounding_areas
     {
         public Vector2 Position { get; set; }
         public float Radius { get; }
+        //public float Scale {get; set;}
 
         bool CollidesWith(IBoundingArea boundingArea);
 
