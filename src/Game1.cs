@@ -1,13 +1,17 @@
 ﻿using Birds.src.BVH;
-using Birds.src.controllers;
-using Birds.src.factories;
-using Birds.src.menu;
-using Birds.src.utility;
+using Birds.src;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
+using Birds.src.controllers;
+using Birds.src.utility;
+using Birds.src.menu;
+using Birds.src.factories;
 
 namespace Birds.src
 {
@@ -79,24 +83,42 @@ namespace Birds.src
             return nextState;
         }
 
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// game-specific content.
+        /// </summary>
+        protected override void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
+        }
+
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            
+
+            ScreenWidth = _graphics.PreferredBackBufferWidth;
+            ScreenHeight = _graphics.PreferredBackBufferHeight;
             if (nextState != null)
             {
                 currentState = nextState;
                 nextState = null;
             }
-            Input.Update(gameTime);
+
             currentState.Update(gameTime);
             currentState.PostUpdate();
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// This is called when the game should draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            ScreenWidth = _graphics.PreferredBackBufferWidth;
-            ScreenHeight = _graphics.PreferredBackBufferHeight;
             currentState.Draw(gameTime, _spriteBatch);
             base.Draw(gameTime);
         }

@@ -44,7 +44,6 @@
     <Compile Include="src\controllers\CohesiveController.cs" />
     <Compile Include="src\controllers\Controller.cs" />
     <Compile Include="src\controllers\GameController.cs" />
-    <Compile Include="src\controllers\Player.cs" />
     <Compile Include="src\controllers\steering\ChaserSteering.cs" />
     <Compile Include="src\controllers\steering\PlayerSteering.cs" />
     <Compile Include="src\controllers\steering\Steering.cs" />

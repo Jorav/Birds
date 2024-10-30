@@ -73,6 +73,7 @@ namespace Birds.src.utility
             TouchPanelCapabilities tc = TouchPanel.GetCapabilities();
             if (tc.IsConnected && !pinching)
             {
+                IsPressed = false;
                 TouchCollection touchCollection = TouchPanel.GetState();
                 foreach (TouchLocation tl in touchCollection)
                 {
@@ -86,7 +87,6 @@ namespace Birds.src.utility
                         IsPressed = true;
                     }
                 }
-                IsPressed = false;
             }
             else
             {
