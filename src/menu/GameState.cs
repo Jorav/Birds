@@ -82,6 +82,7 @@ namespace Birds.src.menu
             HandleScroll();
             CheckClickOnPlayer();
             CheckDoubleClick();
+            Input.Update(gameTime);
             wasPressed = Input.IsPressed;
         }
 
