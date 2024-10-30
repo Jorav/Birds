@@ -27,7 +27,7 @@ namespace Birds.src.menu
         
         public override void Update(GameTime gameTime)
         {
-            
+            Input.Update(gameTime);
             foreach (IComponent component in components)
                 component.Update(gameTime);
         }
